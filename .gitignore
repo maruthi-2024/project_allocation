@@ -1,6 +1,5 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# dependencies
 /frontend/node_modules
 
 # testing
@@ -15,5 +14,6 @@
 /frontend/npm-debug.log*
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
+
 
 /backend/backend/__pycache__/*
