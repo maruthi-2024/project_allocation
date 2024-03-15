@@ -10,9 +10,9 @@ class Designation(models.Model):
         return self.designation
 
 class Employee(AbstractUser):
-    phone_number = models.CharField(("phone_number"), max_length=15)
-    blood_group = models.CharField(("blood_group"), max_length=10)
-    contact_address = models.CharField(("contact_address"), max_length=100)
+    phone_number = models.CharField(("phone_number"), max_length=15,blank=True)
+    blood_group = models.CharField(("blood_group"), max_length=10,blank=True)
+    contact_address = models.CharField(("contact_address"), max_length=100,blank=True)
     designation = models.ForeignKey(
         Designation, verbose_name=("designation"),
         default=None, on_delete=models.SET_NULL,null =True
@@ -43,3 +43,5 @@ class Employee_skill(models.Model):
 
     def __str__(self):
         return f"{self.employee.username} skill"
+
+
