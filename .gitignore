@@ -17,3 +17,7 @@
 
 
 /backend/backend/__pycache__/*
+__pycache__/
+ employee/__pycache__/
+*/__pycache__/
+*/*/__pycache__/
