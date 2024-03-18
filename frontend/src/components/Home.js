@@ -1,26 +1,67 @@
-import React from 'react'
-import {useSelector} from "react-redux"
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from "react-redux"
+import { fetchUser, logoutUser } from '../reducers/authSlice';
+import urls from './Api_Urls';
+import axios from 'axios';
 
-import Login from './Login'
-import urls from './Api_Urls'
-import axios from 'axios'
-import { useDispatch } from "react-redux";
-export default function Home() {
-  let dispatch = useDispatch();
-  const login = useSelector(state => state)
-  const submitHandler= () =>{
-    const api=urls.logout
-    const user = axios.delete(api)
-    dispatch({ 
-      type: "LOGOUT", 
-      payload: {}
-  });
+export const Home = () => {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { token, user } = useSelector(state => state.auth);
+
+
+
+
+  useEffect(() => {
+    setLoading(true)
+
+    async function fetchUserDetails() {
+      if (token) {
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        };
+  
+        try {
+          const res = await axios.get(urls.get_user, config);
+          dispatch(fetchUser(res.data));
+        } catch (err) {
+          alert(err)
+        }
+      }
+      setLoading(false)
+    }
+    
+    fetchUserDetails()
+  }, [])
+
+
+  const submitHandler = () => {
+    dispatch(logoutUser())
   }
-  return (
-   
-    <div>Home
-      <button onClick={submitHandler}>logout</button>
-         {console.log(login)}
-    </div>
-  )
+  // if (!isAuthenticated) {
+  //   return <Navigate to='/login' />
+  // }
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
+
+  if (user) {
+    return (
+      <div>
+        Home
+        {user.username}
+        <button onClick={submitHandler}>logout</button>
+      </div>
+    )
+
+  }
+
 }
+
+export default Home;

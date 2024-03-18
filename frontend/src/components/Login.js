@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { login } from '../actions/auth';
 import { Navigate } from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux"
+import axios from 'axios';
+import { fetchUser, loginUser } from '../reducers/authSlice';
+import urls from './Api_Urls';
 
-const Login = ({ isAuthenticated, login }) => {
+const Login = () => {
+    const {isAuthenticated} = useSelector(state => state.auth);
+    const dispatch = useDispatch()
     const [data, setData] = useState({
         username: '',
         password: ''
@@ -12,12 +18,29 @@ const Login = ({ isAuthenticated, login }) => {
     const { username, password } = data;
 
     const changeHandler = event => {
-        setData({ ...data, [event.target.name]: event.target.value });
+        setData(prev => ({ ...prev, [event.target.name]: event.target.value }));
     };
 
-    const submitHandler = async event => {
+    async function handleLogin() {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        const body = JSON.stringify({ username, password });
+        try {
+            const res = await axios.post(urls.login, body, config);
+            dispatch(loginUser(res.data))
+        } catch (err) {
+            alert(err)
+        }
+    }
+
+
+    const submitHandler = async (event) => {
         event.preventDefault();
-        login(username, password); // Dispatch the login action
+        await handleLogin(username, password); 
+        alert("hey")
     };
 
     if (isAuthenticated) {
@@ -40,8 +63,4 @@ const Login = ({ isAuthenticated, login }) => {
     );
 };
 
-const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
-});
-
-export default connect(mapStateToProps, { login })(Login);
+export default Login;

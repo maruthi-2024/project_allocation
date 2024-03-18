@@ -9,34 +9,29 @@ import {
     LOGOUT
 } from './types';
 import urls from '../components/Api_Urls';
+import { fetchUser, loginUser } from '../reducers/authSlice';
+import { useDispatch } from 'react-redux';
 
 
-export const load_user = () => async dispatch => {
-    if (localStorage.getItem('access')) {
+
+
+export const load_user = async dispatch =>  {
+    if (localStorage.getItem('token')) {
         const config = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `JWT ${localStorage.getItem('access')}`,
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Accept': 'application/json'
             }
         }; 
 
         try {
             const res = await axios.get(urls.get_user, config);
-            console.log(res)
-            dispatch({
-                type: USER_LOADED_SUCCESS,
-                payload: res.data
-            });
+            dispatch(fetchUser(res.data));
         } catch (err) {
-            dispatch({
-                type: USER_LOADED_FAIL
-            });
+            alert(err)
+            
         }
-    } else {
-        dispatch({
-            type: USER_LOADED_FAIL
-        });
     }
 };
 
@@ -77,7 +72,10 @@ export const checkAuthenticated = () => async dispatch => {
     }
 };
 
-export const login = (username, password) => async dispatch => {
+
+export const login = async (username, password) =>   {
+    let dispatch = useDispatch();
+    alert("ok1")
     const config = {
         headers: {
             'Content-Type': 'application/json'
@@ -86,19 +84,41 @@ export const login = (username, password) => async dispatch => {
     const body = JSON.stringify({ username, password });
     try {
         const res = await axios.post(urls.login, body, config);
-
-        dispatch({
-            type: LOGIN_SUCCESS,
-            payload: res.data
-        });
+        dispatch(loginUser(res.data))
 
         dispatch(load_user());
     } catch (err) {
-        dispatch({
-            type: LOGIN_FAIL
-        })
+        alert(err)
     }
 };
+
+// export const login =  (username, password) => async dispatch => {
+//     // let dispatch = useDispatch();
+//     alert("ok1")
+//     const config = {
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     };
+//     const body = JSON.stringify({ username, password });
+//     try {
+//         const res = await axios.post(urls.login, body, config);
+
+//         // dispatch({
+//         //     type: LOGIN_SUCCESS,
+//         //     payload: res.data
+//         // });
+
+//         dispatch(loginUser(res.data))
+
+//         dispatch(load_user());
+//     } catch (err) {
+//         alert(err)
+//         // dispatch({
+//         //     type: LOGIN_FAIL
+//         // })
+//     }
+// };
 
 
 export const verify = (uid, token) => async dispatch => {

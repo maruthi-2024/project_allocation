@@ -4,10 +4,15 @@ from django.http import HttpResponse
 from .models import Employee,Employee_skill
 from Skills.models import Skill,ExpertiseLevel
 from Projects.models import Project,Project_skill 
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from Api.authentication import JWTAuthentication
 def members(request):
     return HttpResponse("<h1>hey phani</h1>")
 
+
 def listOfemployees(request):
+    print(request.user)
     list_of_users=Employee.objects.all().values()
     for mem in list_of_users:
         print(mem)

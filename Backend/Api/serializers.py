@@ -41,12 +41,4 @@ class ProjectSkillSerializer(serializers.ModelSerializer):
         model= Project_skill
         fields = ['project','skill','expertiseLevel']
 
-class CustomUserSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = Employee
-        print("emp")
-        fields = ('id', 'email', 'username', 'phone_number')  # Add additional fields here
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()

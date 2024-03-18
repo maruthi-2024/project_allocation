@@ -10,10 +10,16 @@ from Employee.models import Employee,Employee_skill
 from Projects.models import Project,Project_skill
 from Skills.models import Skill
 from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSerializer,ProjectSkillSerializer
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from Api.authentication import JWTAuthentication
 
-# @user_passes_test(lambda u: u.is_superuser)
 @api_view(['POST',"GET"])
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
+@user_passes_test(lambda u: u.is_superuser)
 def Employees_Viewset(request):
+    print(request.user)
     if request.method == "GET":
         emps= Employee.objects.all()
         serializer = EmployeeSerializer(emps,many=True)

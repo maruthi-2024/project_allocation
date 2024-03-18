@@ -125,14 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS=[
 
-#     os.path.join(BASE_DIR,"build/static")
-# ]
-# STATIC_ROOT =os.path.join(BASE_DIR,"static")
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -146,29 +139,9 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': (
-#         'rest_framework.renderers.JSONRenderer',
-#         'rest_framework.renderers.BrowsableAPIRenderer',
-#     ),
-#    'DEFAULT_AUTHENTICATION_CLASSES': (
-#           'Api.authentication.JWTAuthentication'
-#     ),
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ]
 }
-# SIMPLE_JWT = {
-#    'AUTH_HEADER_TYPES': ('JWT',),
-# }
 
 
 JWT_CONF={
     "TOKEN_LIFETIME_HOURS":5
-}
-
-DJOSER ={
-    #  'LOGIN_FIELD':'email',
-    'SERIALIZERS': {
-        'user': 'Api.serializers.CustomUserSerializer',
-    }
 }

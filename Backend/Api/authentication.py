@@ -41,14 +41,14 @@ class JWTAuthentication(authentication.BaseAuthentication):
     def create_jwt(cls, emp):
         payload = {
             'employee_identifier': emp.username,
+            #expire time
             'exp': int((datetime.now() + timedelta(hours=settings.JWT_CONF['TOKEN_LIFETIME_HOURS'])).timestamp()),
+            #issued time
             'iat': datetime.now().timestamp(),
             'username': emp.username,
             'email': emp.email,
             'is_superuser':emp.is_superuser
         }
-
-        # Encode the JWT with your secret key
         jwt_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
         return jwt_token
