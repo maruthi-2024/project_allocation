@@ -7,7 +7,7 @@ from Projects.models import Project,Project_skill
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['id','username','first_name','last_name','email','date_joined','contact_address','designation','blood_group','phone_number','password']
+        fields = ['id','username','first_name','last_name','email','date_joined','contact_address','designation','blood_group','phone_number','password','gender']
     
     def create(self, data):
         emp = super().create(data)

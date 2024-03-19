@@ -3,27 +3,41 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+from Api.serializers import EmployeeSerializer, EmployeeSkillSerializer
+
 from .authentication import JWTAuthentication
 
-from Employee.models import Employee
+from Employee.models import Designation, Employee, Employee_skill
+
+
+def getSkill(request):
+    emp_skills={}
+    emp_skill_set= Employee_skill.objects.filter(employee=request.user.id)
+    skill_serializer = EmployeeSkillSerializer(emp_skill_set,many=True)
+    emp_skills['skills']=skill_serializer.data
 
 
 @api_view(['GET','POST'])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
 def verify_token(request):
-    print(request,"-----------------")
-    user = request.user  
-    user_data = {
-        'username': user.username,
-        'email': user.email,
-        'phone_number': user.phone_number,
-        'is_superuser':user.is_superuser,
-    }
-    if request.method == "POST":
-        print("post verify token ",request.data)
-    return Response(user_data)
-
+    print("--------------------",request.user)
+    employee=request.user
+    designation_name = employee.designation.designation if employee.designation else None
+    skills_info = []
+    employee_skills = Employee_skill.objects.filter(employee=employee)
+    for emp_skill in employee_skills:
+        skill_name = emp_skill.skill.skill if emp_skill.skill else None
+        expertise_level = emp_skill.get_expertiseLevel_display()  
+        skills_info.append({'skill_name': skill_name, 'expertise_level': expertise_level,'id':emp_skill.id})
+        
+    serializer=EmployeeSerializer(employee)
+    employee_details=serializer.data
+    employee_details['designation'] = designation_name
+    employee_details['skills'] = skills_info
+    employee_details['gender']=employee.get_gender_display()
+    print(employee_details)
+    return Response(employee_details)
 
 @api_view(["POST","GET","DELETE"])
 def Employee_login(request):

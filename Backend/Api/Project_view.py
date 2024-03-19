@@ -1,13 +1,16 @@
 from django.http import HttpResponse,JsonResponse,response
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework import permissions
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth import authenticate, login,logout
 
+
+from .authentication import JWTAuthentication
 from Employee.models import Employee,Employee_skill
-from Projects.models import Project,Project_skill
+from Projects.models import Project,Project_skill,Project_Employee
 from Skills.models import Skill
 from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSerializer,ProjectSkillSerializer
 
@@ -72,3 +75,16 @@ def Project_skill_detail(request):
             return Response(status=HTTP_400_BAD_REQUEST)
         
         return Response(status=HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET','PUT','DELETE',"POST"])
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
+def Employee_in_projects(request):
+    emp_id=request.user.id
+    emp=Employee.objects.get(id=emp_id)
+    queryset=Project_Employee.objects.filter(employee=emp).values('project')
+    project_ids = [item['project'] for item in queryset.values('project')]
+    projects = Project.objects.filter(id__in=project_ids)
+    serializer = ProjectSerializer(projects,many=True)
+    return JsonResponse(serializer.data,safe=False)

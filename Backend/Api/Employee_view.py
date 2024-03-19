@@ -15,9 +15,9 @@ from rest_framework.permissions import IsAuthenticated
 from Api.authentication import JWTAuthentication
 
 @api_view(['POST',"GET"])
-@authentication_classes([JWTAuthentication])  
-@permission_classes([IsAuthenticated])
-@user_passes_test(lambda u: u.is_superuser)
+# @authentication_classes([JWTAuthentication])  
+# @permission_classes([IsAuthenticated])
+# @user_passes_test(lambda u: u.is_superuser)
 def Employees_Viewset(request):
     print(request.user)
     if request.method == "GET":

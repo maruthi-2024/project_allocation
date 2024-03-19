@@ -5,7 +5,6 @@ import Navbar from "./Navbar";
    return (
      <div>
         <Navbar/>
-        this is layout page
         {props.children}
      </div>
    )

@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 
+from django.http import JsonResponse
 import jwt
+from Api.serializers import EmployeeSerializer
 import Backend.settings as settings
 from rest_framework import authentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -31,7 +33,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         if emp is None:
             emp = Employee.objects.filter(email=username_or_email).first()
             if emp is None:
-                raise AuthenticationFailed('User not found')
+                raise AuthenticationFailed('Employee not found')
         return emp, payload
 
     def authenticate_header(self, request):
@@ -39,16 +41,15 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     @classmethod
     def create_jwt(cls, emp):
+        # print(serializer)
         payload = {
             'employee_identifier': emp.username,
             #expire time
             'exp': int((datetime.now() + timedelta(hours=settings.JWT_CONF['TOKEN_LIFETIME_HOURS'])).timestamp()),
             #issued time
             'iat': datetime.now().timestamp(),
-            'username': emp.username,
-            'email': emp.email,
-            'is_superuser':emp.is_superuser
         }
+        print(vars(emp),"jwt create")
         jwt_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
         return jwt_token
