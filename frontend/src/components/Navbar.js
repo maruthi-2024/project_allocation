@@ -24,8 +24,10 @@ const Navbar = () => {
       )}
       {token != null && (
         <div className="container-fluid d-flex justify-content-between align-items-center ">
-           <img src={Logo} alt="Logo" className="logo-image mr-3" style={{ maxWidth: '100px', minWidth: '25px' }} />
-
+          <div className=''>
+          <img src={Logo} alt="Logo" className="logo-image mx-3" style={{ maxWidth: '100px', minWidth: '25px' }} />
+          {user!= null  && user.is_superuser && <Link className='btn ' >Employees</Link>}
+          </div>
           <div className=''>
             <span className="mx-3" dangerouslySetInnerHTML={{ __html: user != null && `Hello &#128075; ${user.username}` }}></span>
             <Link className="btn " onClick={submitHandler}>Log out</Link>
