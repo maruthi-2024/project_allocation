@@ -6,8 +6,8 @@ import Logo from '../images/beehyvlogo.png';
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const { token, user } = useSelector(state => state.auth);
-
+  const { token, user, is_user, username } = useSelector(state => state.auth);
+  console.log(is_user, token, username)
   const submitHandler = () => {
     dispatch(logoutUser());
   };
@@ -17,19 +17,20 @@ const Navbar = () => {
       background: 'rgb(44,107,122)',
       background: 'linear-gradient(51deg, rgba(44,107,122,1) 0%, rgba(9,121,61,1) 0%, rgba(81,143,7,1) 0%, rgba(6,161,129,1) 19%, rgba(0,236,255,1) 100%)'
     }}>
-      {token == null && (
+      {token == null ? (
         <marquee className="text-primary opacity-50 h4" style={{ margin: 0 }}>
           Welcome to Beehyv Project Allocation site
         </marquee>
-      )}
-      {token != null && (
+      ) : (
         <div className="container-fluid d-flex justify-content-between align-items-center ">
           <div className=''>
-          <img src={Logo} alt="Logo" className="logo-image mx-3" style={{ maxWidth: '100px', minWidth: '25px' }} />
-          {user!= null  && user.is_superuser && <Link className='btn ' >Employees</Link>}
+            <Link to="/home" ><img src={Logo} alt="Logo" className="logo-image mx-3" style={{ maxWidth: '100px', minWidth: '25px' }} /></Link>
+            {console.log(is_user === false, is_user, !is_user)
+            }
+            {!is_user && <Link className='btn ' to="/emps">Employees</Link>}
           </div>
           <div className=''>
-            <span className="mx-3" dangerouslySetInnerHTML={{ __html: user != null && `Hello &#128075; ${user.username}` }}></span>
+            <span className="mx-3" dangerouslySetInnerHTML={{ __html: `Hello &#128075; ${username}` }}></span>
             <Link className="btn " onClick={submitHandler}>Log out</Link>
           </div>
         </div>

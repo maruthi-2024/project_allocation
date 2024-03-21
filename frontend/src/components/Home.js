@@ -5,8 +5,8 @@ import axios from 'axios';
 
 import { fetchUser } from '../redux/reducers/authSlice';
 import urls from './Api_Urls';
-import Employee_details from './Employee_details';
 import Projects  from './Projects';
+import User_details from './User_details';
 
 
 
@@ -30,7 +30,7 @@ export const Home = () => {
           const res = await axios.get(urls.get_user, config);
           dispatch(fetchUser(res.data));
         } catch (err) {
-          alert(`Error msg :${err}`);
+          alert(`Error msg in fetching user details:${err}`);
         }
       }
       setLoading(false);
@@ -50,7 +50,7 @@ export const Home = () => {
       <div className="container-fluid full-body">
         <div className="row justify-content-center">
             <div className="col-lg-3 col-md-5 col-sm-6 col-xs-12">
-              <Employee_details />
+              <User_details />
               </div>
               <div className="col">
                 <div className="card p-2 mt-3 mx-2  bg-primary ">

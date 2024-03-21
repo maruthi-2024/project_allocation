@@ -16,49 +16,18 @@ from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSeria
 
 
 @api_view(["GET",'POST'])
-def project_viewset(request):
-    if request.method=="GET":
-        projs=Project.objects.all()
-        serializer=ProjectSerializer(projs,many=True)
-        return JsonResponse(serializer.data,safe=False)
-    elif request.method=="POST":
-        serializer=ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=HTTP_201_CREATED)
-        return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
-    
-@api_view(['GET','PUT','DELETE'])
-def Project_detail(request,pid):
-    proj= Project.objects.get(id=pid)
-    if request.method=="GET":
-        serializer = ProjectSerializer(proj)
-        return JsonResponse(serializer.data,safe=False)
-    elif request.method=="PUT":
-        serializer = ProjectSerializer(proj,data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=HTTP_200_OK)
-        else:
-            print("invalid",serializer.errors)
-        return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
-    elif request.method == "DELETE":
-        proj.delete()
-        return Response(status=HTTP_204_NO_CONTENT)
-
-
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
 @api_view(['GET','PUT','DELETE',"POST"])
-def Project_skill_detail(request):
-    proj=Project.objects.get(id=request.data['project'])
+def Project_skill_detail(request,pid):
+    proj=Project.objects.get(id=pid)
     proj_skill_set= Project_skill.objects.filter(project=proj)
     if request.method=="GET":
         serializer = ProjectSkillSerializer(proj_skill_set,many=True)
         return JsonResponse(serializer.data,safe=False)
     elif request.method=="PUT" or request.method=="POST":
-        print(request.data,request.data['project'])
         skill=Skill.objects.get(id =request.data['skill'])
         proj_skill ,created= Project_skill.objects.get_or_create(project=proj ,skill=skill)
-        print(proj_skill)
         serializer = ProjectSkillSerializer(proj_skill,data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -77,14 +46,60 @@ def Project_skill_detail(request):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET','PUT','DELETE',"POST"])
+@api_view(["GET",'POST'])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
-def Employee_in_projects(request):
-    emp_id=request.user.id
-    emp=Employee.objects.get(id=emp_id)
-    queryset=Project_Employee.objects.filter(employee=emp).values('project')
-    project_ids = [item['project'] for item in queryset.values('project')]
-    projects = Project.objects.filter(id__in=project_ids)
-    serializer = ProjectSerializer(projects,many=True)
-    return JsonResponse(serializer.data,safe=False)
+@api_view(["GET","POST","PUT","DELETE"])
+def Employees_in_Project(request,pid):
+    req_project = Project.objects.get(id=pid)
+    if request.method == "GET":
+        employee_set=Project_Employee.objects.filter(project=req_project).values('employee')
+        employee_ids = [item['employee'] for item in employee_set.values('employee')]
+        emps = Employee.objects.filter(id__in=employee_ids)
+        serializer = EmployeeSerializer(emps,many=True)
+        return Response(serializer.data,status=HTTP_200_OK)
+    return Response(status=HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(["GET",'POST'])
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
+@user_passes_test(lambda u: u.is_superuser)
+def Project_viewset(request):
+    if request.method=="GET":
+        projs=Project.objects.all()
+        serializer=ProjectSerializer(projs,many=True)
+        return JsonResponse(serializer.data,safe=False)
+    elif request.method=="POST":
+        if(request.data["lead"] == ""):
+            request.data["lead"]=request.user.id
+        serializer=ProjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+        return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
+    
+
+
+
+@api_view(['GET','PUT','DELETE'])
+def Project_detail(request,pid):
+    proj= Project.objects.get(id=pid)
+    if request.method=="GET":
+        serializer = ProjectSerializer(proj)
+        return JsonResponse(serializer.data,safe=False)
+    elif request.method=="PUT":
+        serializer = ProjectSerializer(proj,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=HTTP_200_OK)
+        else:
+            print("invalid",serializer.errors)
+        return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
+    elif request.method == "DELETE":
+        proj.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
+

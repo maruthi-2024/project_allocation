@@ -7,8 +7,6 @@ from Projects.models import Project,Project_skill
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from Api.authentication import JWTAuthentication
-def members(request):
-    return HttpResponse("<h1>hey phani</h1>")
 
 
 def listOfemployees(request):

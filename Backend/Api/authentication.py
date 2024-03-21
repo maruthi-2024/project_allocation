@@ -41,7 +41,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     @classmethod
     def create_jwt(cls, emp):
-        # print(serializer)
         payload = {
             'employee_identifier': emp.username,
             #expire time

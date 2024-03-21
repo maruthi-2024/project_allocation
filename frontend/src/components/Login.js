@@ -31,7 +31,10 @@ const Login = () => {
       const res = await axios.post(urls.login, body, config);
       dispatch(loginUser(res.data));
     } catch (err) {
-      alert(`Error msg :${err}`);
+      if(err.response.status==400)
+      alert(`Invalid Credentials`);
+    else
+    alert(`Error msg :${err.response.status}`);
     }
   }
 
@@ -47,7 +50,7 @@ const Login = () => {
   return (
     <div className='bg-primary d-flex justify-content-center align-items-center'
       style={{
-        minHeight: '92vh',
+        minHeight: '93vh',
         background: ' rgb(44,107,122)',
         background: 'linear-gradient(90deg, rgba(44,107,122,1) 0%, rgba(9,121,61,1) 0%, rgba(6,161,129,1) 22%, rgba(0,236,255,1) 100%)'
       }}>
