@@ -51,7 +51,7 @@ const Projects = () => {
         if(projs.length ==0){
             return <>
             <h1>Your not assigned to any project ...</h1>
-               <p className='btn d-flex justify-content-end h1 text-info' onClick={projectaddhandler}>Add project</p>
+             {!is_user  && <p className='btn d-flex justify-content-end h1 text-info' onClick={projectaddhandler}>Add project</p>}
             </>
         }
         return (
