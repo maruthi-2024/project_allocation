@@ -31,7 +31,11 @@ const Login = () => {
       const res = await axios.post(urls.login, body, config);
       dispatch(loginUser(res.data));
     } catch (err) {
-      if(err.response.status==400)
+      if(err.response == null)
+      {
+        alert(`Error msg :${err}`);
+      }
+      else if(err.response.status==400)
       alert(`Invalid Credentials`);
     else
     alert(`Error msg :${err.response.status}`);

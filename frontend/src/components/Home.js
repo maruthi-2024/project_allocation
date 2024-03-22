@@ -53,7 +53,7 @@ export const Home = () => {
               <User_details />
               </div>
               <div className="col">
-                <div className="card p-2 mt-3 mx-2  bg-primary ">
+                <div className="card p-2 mt-3 mx-2   ">
                   <Projects/>
                 </div>
               </div>

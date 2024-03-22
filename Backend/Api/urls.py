@@ -6,6 +6,7 @@ from .views import Login
 from .User_view import User_projects,User_skills,User_details
 from .Employee_view import Employees_View,Employee_skills
 from .Project_view import Project_viewset,Project_detail,Project_skill_detail,Employees_in_Project
+from .Skills_view import Skill_viewset
 
 urlpatterns=[
     #for user login
@@ -35,6 +36,8 @@ urlpatterns=[
     #to create project
     path("proj_view/",Project_viewset,name="projects view"),
 
+    #to get list of skills
+    path("skills/",Skill_viewset,name="get skill set"),
 
     path("proj/<int:pid>",Project_detail,name="project detail"),
     

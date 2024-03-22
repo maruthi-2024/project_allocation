@@ -9,6 +9,7 @@ const urls={
     "get_emp_skills":BASE_URL + "emp_skills/",
     "get_proj_skills":BASE_URL+"proj_skills/",
     "create_proj":BASE_URL + "proj_view/",
+    "get_skills":BASE_URL +"skills/",
 }
 
 export default urls;

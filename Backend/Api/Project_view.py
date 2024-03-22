@@ -15,10 +15,9 @@ from Skills.models import Skill
 from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSerializer,ProjectSkillSerializer
 
 
-@api_view(["GET",'POST'])
+@api_view(["GET",'POST',"PUT"])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
-@api_view(['GET','PUT','DELETE',"POST"])
 def Project_skill_detail(request,pid):
     proj=Project.objects.get(id=pid)
     proj_skill_set= Project_skill.objects.filter(project=proj)
@@ -26,14 +25,16 @@ def Project_skill_detail(request,pid):
         serializer = ProjectSkillSerializer(proj_skill_set,many=True)
         return JsonResponse(serializer.data,safe=False)
     elif request.method=="PUT" or request.method=="POST":
+        print(request.data,"-------------------")
         skill=Skill.objects.get(id =request.data['skill'])
         proj_skill ,created= Project_skill.objects.get_or_create(project=proj ,skill=skill)
+        print(vars(proj_skill),created)
         serializer = ProjectSkillSerializer(proj_skill,data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=HTTP_200_OK)
         else:
-            print("invalid",serializer.errors)
+            print("invalid",serializer.errors,request.data)
         return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
     elif request.method == "DELETE":
         try:
@@ -46,10 +47,9 @@ def Project_skill_detail(request,pid):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-@api_view(["GET",'POST'])
+@api_view(["GET"])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
-@api_view(["GET","POST","PUT","DELETE"])
 def Employees_in_Project(request,pid):
     req_project = Project.objects.get(id=pid)
     if request.method == "GET":
@@ -77,6 +77,14 @@ def Project_viewset(request):
         serializer=ProjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            try:
+                print(serializer.data)
+                project=Project.objects.get(id= serializer.data["id"])
+                employee = Employee.objects.get(id = serializer.data["lead"])
+                Project_Employee.objects.create(project=project,employee = employee)
+            except Exception as e:
+                print("project employee creation error",e)
+                return Response(status=HTTP_400_BAD_REQUEST)
             return Response(serializer.data,status=HTTP_201_CREATED)
         else:
             print(serializer.errors)

@@ -59,7 +59,7 @@ export const Employee_Card = ({ user }) => {
                 }
             }
         }
-        fetchEmployeeSkills();
+        !isAccordionOpen && fetchEmployeeSkills();
         setIsAccordionOpen(!isAccordionOpen);
     };
 
