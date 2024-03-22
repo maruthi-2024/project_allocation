@@ -111,3 +111,38 @@ def Project_detail(request,pid):
         proj.delete()
         return Response(status=HTTP_204_NO_CONTENT)
 
+
+def check_expertise_level(proj_skill_set,emp_skill_set):
+    for proj_skill in proj_skill_set:
+        pass
+
+@api_view(["GET"])
+def Suggested_Employees(request,pid):
+    proj=Project.objects.get(id=pid)
+    proj_req_skills=Project_skill.objects.filter(project_id=pid)
+    proj_req_skill_set_ids= set(proj_req_skills.values_list('skill'))
+    proj_req_skill_dict=dict(proj_req_skills.values_list('skill','expertiseLevel'))
+    emps=Employee.objects.all()
+    final_emp_list=list(emps)
+    print(type(emps))
+    for emp in emps:
+        emp_skill_set=Employee_skill.objects.filter(employee=emp)
+        emp_skill_ids = set(emp_skill_set.values_list('skill'))
+        exp_level={
+            "IN":2,
+            "BG":1,
+            "EX":3
+        }
+        print(emp_skill_ids,proj_req_skill_set_ids)
+        if proj_req_skill_set_ids.issubset(emp_skill_ids):
+            emp_skill_dict = dict(emp_skill_set.values_list('skill','expertiseLevel'))
+            for proj_skill_id in proj_req_skill_dict.keys():
+                if exp_level[proj_req_skill_dict[proj_skill_id]] > exp_level[emp_skill_dict[proj_skill_id]]:
+                    final_emp_list.remove(emp)
+                    break
+        else:
+            final_emp_list.remove(emp)
+    serializer = EmployeeSerializer(final_emp_list,many=True)
+    return Response(serializer.data,status=HTTP_200_OK)
+    
+

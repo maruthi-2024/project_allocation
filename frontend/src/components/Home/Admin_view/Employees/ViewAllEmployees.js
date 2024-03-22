@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 
-import urls from './Api_Urls';
+import urls from '../../../Api_Urls';
 import Employee_Card from './Employee_Card';
 import { Navigate } from 'react-router-dom';
 

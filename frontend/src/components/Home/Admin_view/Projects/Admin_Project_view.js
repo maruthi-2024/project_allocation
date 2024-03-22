@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
-import urls from './Api_Urls';
+import urls from '../../../Api_Urls';
+import Show_suggested_Employees from './Get_suggested_Employees';
+import Get_suggested_Employees from './Get_suggested_Employees';
 
 const Admin_Project_view = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
@@ -22,7 +24,7 @@ const Admin_Project_view = () => {
            "EX": "Expert"
        }
 
-  if (token == null) return <Navigate to="/login" />;
+  
 
   const handleEditSkill = (index, event) => {
     const { name, value,id } = event.target;
@@ -109,7 +111,7 @@ const Admin_Project_view = () => {
         };
 
         try {
-          const response = await axios.get("http://127.0.0.1:8000/api/skills/", config);
+          const response = await axios.get(urls.get_skills, config);
           setSkillOptions(response.data);  //Update skillOptions state with fetched skills
         } catch (err) {
           alert(`Error in fetching skills: ${err}`);
@@ -120,6 +122,8 @@ const Admin_Project_view = () => {
     getSkills();
   }, [token]);//  Add token as a dependency
 
+
+  if (token == null) return <Navigate to="/login" />;
   return (
     <div>
       <h2>{project.title}</h2>
@@ -229,9 +233,12 @@ const Admin_Project_view = () => {
             </div>
           </div>
           <div className="col">
-            <div className="card p-2 mt-3 mx-2  bg-primary ">
-
-            </div>
+            {/* <div className="card p-2 mt-3 mx-2 ">
+               <button onClick={handleSuggestedEmployees}>
+                suggest employees
+               </button>
+            </div> */}
+            <Get_suggested_Employees project={project}/>
           </div>
         </div>
       </div>

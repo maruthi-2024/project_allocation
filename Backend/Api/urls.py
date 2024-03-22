@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from .views import Login
 from .User_view import User_projects,User_skills,User_details
 from .Employee_view import Employees_View,Employee_skills
-from .Project_view import Project_viewset,Project_detail,Project_skill_detail,Employees_in_Project
+from .Project_view import Project_viewset,Project_detail,Project_skill_detail,Employees_in_Project,Suggested_Employees
 from .Skills_view import Skill_viewset
 
 urlpatterns=[
@@ -41,6 +41,8 @@ urlpatterns=[
 
     path("proj/<int:pid>",Project_detail,name="project detail"),
     
+    #employees suggested for the project
+    path("sug_emps/<int:pid>",Suggested_Employees,name="suggested")
 
     
 ]

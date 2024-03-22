@@ -6,9 +6,10 @@ import Home from './components/Home';
 import Layout from './components/Layout';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import ViewAllEmployees from './components/ViewAllEmployees';
-import Admin_Project_view from './components/Admin_Project_view';
-import AddProject from './components/AddProject';
+
+import ViewAllEmployees from './components//Home/Admin_view/Employees/ViewAllEmployees';
+import Admin_Project_view from './components/Home/Admin_view/Projects/Admin_Project_view';
+import AddProject from './components/Home/Admin_view/Projects/AddProject';
 
 
 const App = () => {

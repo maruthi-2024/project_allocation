@@ -70,28 +70,6 @@ def Employee_skills(request,eid):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-# #for getting looged user details ,edit the user
-# @api_view(['GET','PUT','DELETE'])
-# @authentication_classes([JWTAuthentication])  
-# @permission_classes([IsAuthenticated])
-# def Employee_detail(request):
-#     eid=request.user.id
-#     emp= Employee.objects.get(id=eid)
-#     if request.method=="GET":
-#         serializer = EmployeeSerializer(emp)
-#         return JsonResponse(serializer.data,safe=False)
-#     elif request.method=="PUT":
-#         serializer = EmployeeSerializer(emp,data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data,status=HTTP_200_OK)
-#         else:
-#             print("invalid",serializer.errors)
-#         return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
-#     elif request.method == "DELETE":
-#         emp.delete()
-#         return Response(status=HTTP_204_NO_CONTENT)
-
 
 
 # @api_view(["GET",'POST'])

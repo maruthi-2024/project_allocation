@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import urls from './Api_Urls';
+import urls from '../Api_Urls';
 import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
-import PlusButton from "../images/plusbutton.jpeg"
+import PlusButton from "../../images/plusbutton.jpeg"
 const Projects = () => {
     const { token, user,is_user } = useSelector((state) => state.auth);
     const [loading, setLoading] = useState(false);

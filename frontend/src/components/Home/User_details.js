@@ -3,17 +3,17 @@ import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 import axios from 'axios';
 
-import urls from './Api_Urls';
+import urls from '../Api_Urls';
 
-import FemaleLogo from '../images/Employee_female.png';
-import MaleLogo from '../images/Employee_male.png';
-import Locationpng from '../images/location.png';
-import Emailpng from '../images/email.png';
-import PhoneNumberpng from '../images/phone-number.png';
-import Datepng from '../images/Date.png';
-import BloodGrppng from '../images/BloodGrp.png';
+import FemaleLogo from '../../images/Employee_female.png';
+import MaleLogo from '../../images/Employee_male.png';
+import Locationpng from '../../images/location.png';
+import Emailpng from '../../images/email.png';
+import PhoneNumberpng from '../../images/phone-number.png';
+import Datepng from '../../images/Date.png';
+import BloodGrppng from '../../images/BloodGrp.png';
 
-import "../Css/User_details.css"
+import "../../Css/User_details.css"
 
 const User_details = () => {
   const { token, user } = useSelector((state) => state.auth);
@@ -58,14 +58,6 @@ const User_details = () => {
 
   const handleChange = (e) => {
     console.log(editedUser)
-    // let names=""
-    // e.target.name == "full_name" ? (names=(e.target.value).split(" "),
-    // setEditedUser((prevUser) => ({
-    //   ...prevUser,  
-    //   [ e.target.first_name]:  names[0],
-    //   [ e.target.last_name]:  names[1],
-    // }))
-    // ):(console.log("hey"))
      setEditedUser((prevUser) => ({
       ...prevUser,  
       [ e.target.name]:  e.target.value,
@@ -103,13 +95,11 @@ const User_details = () => {
           <tbody>
             <tr>
               <td width="25px"><img width="25px" src={Locationpng} /></td>
-              {/* <td><p id="location">{user.contact_address}</p></td> */}
               <td>{isEditing ? <input type="text" name="contact_address" value={editedUser.contact_address} onChange={handleChange} /> : editedUser.contact_address}</td>
             </tr>
             <tr>
               <td width="25px"><img width="25px" src={PhoneNumberpng} /></td>
               <td>{isEditing ? <input type="text" name="phone_number" value={editedUser.phone_number} onChange={handleChange} /> : editedUser.phone_number}</td>
-              {/* <td><p id="phonenumber">{user.phone_number}</p></td> */}
             </tr>
             <tr>
               <td width="25px"><img width="25px" src={Emailpng} /></td>

@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 import axios from 'axios';
 
-import urls from './Api_Urls';
-import FemaleLogo from '../images/Employee_female.png';
-import MaleLogo from '../images/Employee_male.png';
+import urls from '../../../Api_Urls';
+import FemaleLogo from '../../../../images/Employee_female.png';
+import MaleLogo from '../../../../images/Employee_male.png';
 
 export const Employee_Card = ({ user }) => {
     const { token } = useSelector((state) => state.auth);

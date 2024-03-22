@@ -5,8 +5,8 @@ import axios from 'axios';
 
 import { fetchUser } from '../redux/reducers/authSlice';
 import urls from './Api_Urls';
-import Projects  from './Projects';
-import User_details from './User_details';
+import Projects  from './Home/Projects';
+import User_details from './Home/User_details';
 
 
 
