@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'Notification.apps.NotificationConfig',
     'Api.apps.ApiConfig',
     'Projects.apps.ProjectsConfig',
     'Skills.apps.SkillsConfig',
@@ -139,6 +140,9 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'Api.authentication.JWTAuthentication',
+    ),
 }
 
 

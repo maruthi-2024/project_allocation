@@ -56,25 +56,27 @@ const Projects = () => {
         }
         return (
             <div>
-               <h1>Projects</h1>
-               <p className='btn d-flex justify-content-end h1 text-info' onClick={projectaddhandler}>Add project</p>
-                <div className="d-flex flex-column">
+               <h2 className='text-primary'><i>Projects</i></h2>
+              {!is_user &&  <p className='btn d-flex justify-content-end h1 text-info' onClick={projectaddhandler}>Add project</p>}
+                <div className="container">
+                <div class="row">
                     {projs.map(project => (
-                    <div className="m-3 bg-info" key={project.id} onClick={() => projectHandler(project)} >
+                    <div className="m-3 col-lg-5" key={project.id} onClick={() => projectHandler(project)} >
                         <div className="flex card">
-                            <div className="card-header">
-                                    <span className='h3 text-primary'>{project.title}</span>
-                                    <span className='d-flex justify-content-end text-primary'>
-                                        {project.starting_date} to  {project.deadline}
+                            <div className="card-header bg-info">
+                                    <span className='h3'  style={{fontFamily: "sans-serif"}}>{project.title}</span>
+                                    <span className='d-flex justify-content-end '>
+                                     {project.starting_date} to  {project.deadline}
                                     </span>
                             </div>
                             <div className="card-body">
-                                <h5 className="card-title text-info">Project Lead : {project.project_lead? project.project_lead.username:null}</h5>
+                                <h5 className="card-title">Project Lead : {project.project_lead? project.project_lead.username:null}</h5>
                                 <p className="card-text"> {project.description}</p>
                             </div>
                         </div>    
                     </div>
                     ))}
+                    </div>
                 </div>
             </div>
           )

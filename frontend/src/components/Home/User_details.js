@@ -77,9 +77,10 @@ const User_details = () => {
       try {
           console.log(urls.get_skills)
           const res = await axios.put(urls.get_user,editedUser , config);
+          console.log(res)
           dispatch(fetchUser(res.data));
       } catch (err) {
-          alert(`Error msg :${err}`);
+          alert(`Error msg :${err.response.data}`);
       }
   }
     setIsEditing(false);
@@ -96,8 +97,8 @@ const User_details = () => {
         <img src={user.emp_gender === 'Male' ? MaleLogo : FemaleLogo} alt="Profile" width="100" />
         <h3>{isEditing ? (
           <div className='d-flex'>
-            <input type="text" name="first_name" value={editedUser.first_name} onChange={handleChange} />
-            <input type="text" name="last_name" value={editedUser.last_name} onChange={handleChange} />
+            <input className='name_input' type="text" name="first_name" value={editedUser.first_name} onChange={handleChange} />
+            <input  className='name_input' type="text" name="last_name" value={editedUser.last_name} onChange={handleChange} />
           </div>
         ) : (
           `${user.first_name} ${user.last_name}`

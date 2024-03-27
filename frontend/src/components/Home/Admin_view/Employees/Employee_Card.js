@@ -6,6 +6,7 @@ import axios from 'axios';
 import urls from '../../../Api_Urls';
 import FemaleLogo from '../../../../images/Employee_female.png';
 import MaleLogo from '../../../../images/Employee_male.png';
+import ShowEmployeeSkills from './showEmploeeSkills';
 
 export const Employee_Card = ({ user }) => {
     const { token } = useSelector((state) => state.auth);
@@ -73,7 +74,8 @@ export const Employee_Card = ({ user }) => {
                 </div>
             </div>
             <div className="d-flex justify-content-center">
-                <div className="accordion accordion-flush col-6" id="accordionFlushExample">
+                <ShowEmployeeSkills skills={skills} setSkills={setSkills} user={user}/>
+                {/* <div className="accordion accordion-flush col-6" id="accordionFlushExample">
                     <div className="accordion-item">
                         <h2 className="accordion-header" id="flush-headingOne">
                             <button
@@ -134,7 +136,7 @@ export const Employee_Card = ({ user }) => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
             </div>
         </div>

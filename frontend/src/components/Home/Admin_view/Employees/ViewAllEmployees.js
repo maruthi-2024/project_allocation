@@ -4,11 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import urls from '../../../Api_Urls';
 import Employee_Card from './Employee_Card';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const ViewAllEmployees = () => {
   const [employees, setEmployees] = useState([])
   const { token, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function fetchAllEmployees() {
       if (token) {
@@ -34,15 +36,25 @@ const ViewAllEmployees = () => {
   }, [])
 
   if (token == null) return <Navigate to="/login" />;
+
+  const employeeAddHandler=()=>{
+    navigate("/add_emp")
+  }
+
   return (
     <div className="container">
+      <div className='d-flex justify-content-end'>
+      <div className=' btn  btn-primary my-3' onClick={employeeAddHandler}>Add employee</div>
+      </div>
       <div className="row">
         {
           employees.map(emp => !emp.is_superuser && <div className="col-lg-4 col-md-5 col-sm-6 col-xs-12">
             <Employee_Card user={emp} />
           </div> )
         }
+     
       </div>
+
     </div>
   )
 }

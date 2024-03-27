@@ -8,9 +8,11 @@ from .authentication import JWTAuthentication
 from Skills.models import Skill
 from .serializers import SkillSerializer
 
+
+#to get all the skills present
 @api_view(["GET"])
-# @authentication_classes([JWTAuthentication])  
-# @permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
 def Skill_viewset(request):
     if request.method == "GET":
         skill_set=Skill.objects.all()

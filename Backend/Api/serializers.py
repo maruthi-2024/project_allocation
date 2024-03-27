@@ -4,7 +4,7 @@ from djoser.serializers import UserCreateSerializer
 from Employee.models import Employee,Employee_skill,Designation
 from Projects.models import Project,Project_skill
 from Skills.models import Skill
-
+from Notification.models import Notification
 
 class DesignationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,24 +22,22 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = ['id','password','designation','gender','username','first_name','last_name','emp_gender','email','date_joined','contact_address','emp_designation','blood_group','phone_number','is_superuser']
-    
+        extra_kwargs = {'password': {'write_only': True}}
     def create(self, data):
         emp = super().create(data)
-        print(data,"---------------")
         emp.set_password(data['password'])
         emp.save()
         return emp
     
     def update(self, instance, data):
         emp = super().update(instance, data)
-        print(data['password'])
         try:
             emp.set_password(data['password'])
             emp.save()
-            print(data['password'])
         except KeyError:
             pass
         return emp
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     project_lead=EmployeeSerializer(source="lead",read_only=True,)
@@ -60,3 +58,8 @@ class ProjectSkillSerializer(serializers.ModelSerializer):
     class Meta:
         model= Project_skill
         fields = ['project','skill_info','skill','expertiseLevel','expertise_level','id']
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'

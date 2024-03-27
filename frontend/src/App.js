@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ViewAllEmployees from './components//Home/Admin_view/Employees/ViewAllEmployees';
 import Admin_Project_view from './components/Home/Admin_view/Projects/Admin_Project_view';
 import AddProject from './components/Home/Admin_view/Projects/AddProject';
+import Add_Employee from './components/Home/Admin_view/Employees/Add_Employee';
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
             <Route exact path='/emps' element={<ViewAllEmployees/>} />
             <Route exact path="/proj" element={<Admin_Project_view/>}/>
             <Route exact path='/add_proj' element={<AddProject/>}/>
+            <Route exact path='/add_emp' element={<Add_Employee/>}/>
           </Routes>
         </Layout>
       </BrowserRouter>

@@ -5,9 +5,10 @@ from django.views.generic import TemplateView
 from .views import Login
 from .User_view import User_projects,User_skills,User_details
 from .Employee_view import Employees_View,Employee_skills
-from .Project_view import Project_viewset,Project_detail,Project_skill_detail,Employees_in_Project,Suggested_Employees
+from .Project_view import Project_viewset,Project_detail,Project_skill_detail,Employees_in_Project,Suggested_Employees,Check_employees_satisfaction
 from .Skills_view import Skill_viewset
-
+from .Desigantions_view import Get_Designations
+from .Notification_view import Get_notifications
 urlpatterns=[
     #for user login
     path("login/",Login,name="login"),
@@ -42,9 +43,15 @@ urlpatterns=[
     path("proj/<int:pid>",Project_detail,name="project detail"),
     
     #employees suggested for the project
-    path("sug_emps/<int:pid>",Suggested_Employees,name="suggested")
+    path("sug_emps/<int:pid>",Suggested_Employees,name="suggested"),
 
-    
+    #to get avialable designations
+    path("des/",Get_Designations,name="designations"),
+
+
+    path("check_proj_alloc/<int:pid>",Check_employees_satisfaction,name = "verifying project allocation"),
+
+    path("get_notifications/",Get_notifications,name="notifications")
 ]
 
 urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]

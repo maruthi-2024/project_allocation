@@ -6,43 +6,46 @@ import axios from 'axios';
 import urls from '../../../Api_Urls';
 import Show_Suggested_employees from './Show_Suggested_employees';
 
-const Get_suggested_Employees = ({project}) => {
-
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-  const [skills, setSkills] = useState([]);
+const Get_suggested_Employees = ({ project, skillsHasChanges, suggEmpHasChanges, setsuggEmpHasChanges }) => {
   const { token } = useSelector((state) => state.auth);
-  const [isEditing, setIsEditing] = useState(false);
-  const [employeeList,setEmployeeList] =useState([])
-  const [displaySuggestions,setdisplaySuggestions] = useState(false)
+  const [employeeList, setEmployeeList] = useState([])
 
-    const handleSuggestedEmployees = async () =>{
-        if (token) {
-          const config = {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-              Accept: 'application/json',
-            },
-          };
-          try {
-            const response = await axios.get(urls.get_suggested_emp + project.id, config);
-            setEmployeeList(response.data)
-            console.log(response.data)
-          } catch (err) {
-            alert(`Error in fetching skills: ${err}`);
-          }
-          setdisplaySuggestions(true)
-        }
-       
-      } 
- if (token == null) return <Navigate to="/login" />;
+  const handleSuggestedEmployees = async () => {
+    if (token) {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      };
+      try {
+        const response = await axios.get(urls.get_suggested_emp + project.id, config);
+        setEmployeeList(response.data)
+        console.log(response.data, "sug")
+      } catch (err) {
+        alert(`Error in fetching skills: ${err}`);
+      }
+    }
+
+  }
+
+  useEffect(() => {
+    handleSuggestedEmployees()
+    console.log("sugg")
+  }, [skillsHasChanges, suggEmpHasChanges])
+  if (token == null) return <Navigate to="/login" />;
   return (
     <div className="card p-2 mt-3 mx-2 ">
-    <button onClick={handleSuggestedEmployees}>
-     suggest employees
-    </button>
-    {displaySuggestions && <Show_Suggested_employees employeeList = {employeeList}/>}
- </div>
+
+      {
+        employeeList.length == 0 ? <h1 className='p-4'>No employee has the required skill set</h1> : <>
+          <h4>Sugggested Employees</h4>
+          <Show_Suggested_employees employeeList={employeeList} project={project} setsuggEmpHasChanges={setsuggEmpHasChanges} suggEmpHasChanges={suggEmpHasChanges} />
+        </>
+
+      }
+    </div>
   )
 }
 

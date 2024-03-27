@@ -9,8 +9,12 @@ const urls={
     "get_emp_skills":BASE_URL + "emp_skills/",
     "get_proj_skills":BASE_URL+"proj_skills/",
     "create_proj":BASE_URL + "proj_view/",
-    "get_skills":BASE_URL +"skills/",//to get avialabe sill list
+    "get_skills":BASE_URL +"skills/",
     "get_suggested_emp":BASE_URL + "sug_emps/",
+    "get_deigsnations" : BASE_URL + "des/",
+    "get_emps_in_proj" : BASE_URL + "emps_in_proj/",
+    "check_proj_alloc":BASE_URL +"check_proj_alloc/",
+    "get_notifications":BASE_URL + "get_notifications/"
 }
 
 export default urls;

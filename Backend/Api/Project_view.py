@@ -1,7 +1,7 @@
 from django.http import HttpResponse,JsonResponse,response
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.status import HTTP_201_CREATED,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_201_CREATED,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_404_NOT_FOUND,HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework import permissions
 from django.contrib.auth.decorators import user_passes_test,login_required
@@ -47,7 +47,7 @@ def Project_skill_detail(request,pid):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-@api_view(["GET"])
+@api_view(["GET","POST","DELETE"])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
 def Employees_in_Project(request,pid):
@@ -58,7 +58,25 @@ def Employees_in_Project(request,pid):
         emps = Employee.objects.filter(id__in=employee_ids)
         serializer = EmployeeSerializer(emps,many=True)
         return Response(serializer.data,status=HTTP_200_OK)
-    return Response(status=HTTP_400_BAD_REQUEST)
+    elif request.method == "POST":
+        employee_id = request.data.get("employee")
+        if employee_id:
+            try:
+                employee = Employee.objects.get(id=employee_id)
+                new_employee, created = Project_Employee.objects.get_or_create(
+                    employee=employee,
+                    project=req_project
+                )
+                if created:
+                    return Response(status=HTTP_201_CREATED)
+                else:
+                    return Response(status=HTTP_200_OK)
+            except Employee.DoesNotExist:
+                return Response({"error": "Employee not found"}, status=HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Employee ID not provided"}, status=HTTP_400_BAD_REQUEST)
+
+    return Response({"error": "Invalid request method"}, status=HTTP_400_BAD_REQUEST)
 
 
 
@@ -112,20 +130,25 @@ def Project_detail(request,pid):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-def check_expertise_level(proj_skill_set,emp_skill_set):
-    for proj_skill in proj_skill_set:
-        pass
 
-@api_view(["GET"])
+
+
+#get suggested employees for the project based on req projet skill set
+@api_view(["GET","DELETE"])
 def Suggested_Employees(request,pid):
     proj=Project.objects.get(id=pid)
     proj_req_skills=Project_skill.objects.filter(project_id=pid)
-    proj_req_skill_set_ids= set(proj_req_skills.values_list('skill'))
+    proj_req_skill_ids= set(proj_req_skills.values_list('skill'))
     proj_req_skill_dict=dict(proj_req_skills.values_list('skill','expertiseLevel'))
+    #employees already present in project
+    employee_set=Project_Employee.objects.filter(project=proj).values('employee')
+    employee_ids = [item['employee'] for item in employee_set.values('employee')]
     emps=Employee.objects.all()
     final_emp_list=list(emps)
-    print(type(emps))
     for emp in emps:
+        if emp.id in employee_ids:
+            final_emp_list.remove(emp)
+            continue
         emp_skill_set=Employee_skill.objects.filter(employee=emp)
         emp_skill_ids = set(emp_skill_set.values_list('skill'))
         exp_level={
@@ -133,8 +156,7 @@ def Suggested_Employees(request,pid):
             "BG":1,
             "EX":3
         }
-        print(emp_skill_ids,proj_req_skill_set_ids)
-        if proj_req_skill_set_ids.issubset(emp_skill_ids):
+        if proj_req_skill_ids.issubset(emp_skill_ids):
             emp_skill_dict = dict(emp_skill_set.values_list('skill','expertiseLevel'))
             for proj_skill_id in proj_req_skill_dict.keys():
                 if exp_level[proj_req_skill_dict[proj_skill_id]] > exp_level[emp_skill_dict[proj_skill_id]]:
@@ -145,4 +167,38 @@ def Suggested_Employees(request,pid):
     serializer = EmployeeSerializer(final_emp_list,many=True)
     return Response(serializer.data,status=HTTP_200_OK)
     
-
+@api_view(["GET"])
+def Check_employees_satisfaction(request,pid):
+    print("checking--------")
+    proj=Project.objects.get(id=pid)
+    proj_req_skills=Project_skill.objects.filter(project_id=pid)
+    proj_req_skill_ids= set(proj_req_skills.values_list('skill'))
+    proj_req_skill_dict=dict(proj_req_skills.values_list('skill','expertiseLevel'))
+    print(proj_req_skill_dict,"idtc proj")
+    employee_set=Project_Employee.objects.filter(project=proj).values('employee')
+    employee_ids = [item['employee'] for item in employee_set.values('employee')]
+    print(employee_ids,"----" )
+    if proj.lead_id in employee_ids:
+        employee_ids.remove(proj.lead_id)
+    emps = Employee.objects.filter(id__in=employee_ids)
+    for emp in emps:
+        emp_skill_set=Employee_skill.objects.filter(employee=emp)
+        emp_skill_ids = set(emp_skill_set.values_list('skill'))
+        exp_level={
+            "IN":2,
+            "BG":1,
+            "EX":3
+        }
+        if proj_req_skill_ids.issubset(emp_skill_ids):
+            emp_skill_dict = dict(emp_skill_set.values_list('skill','expertiseLevel'))
+            print(emp_skill_dict,"emp  ditc")
+            for proj_skill_id in proj_req_skill_dict.keys():
+                if exp_level[proj_req_skill_dict[proj_skill_id]] > exp_level[emp_skill_dict[proj_skill_id]]:
+                    employee_instance = Project_Employee.objects.get(project = proj ,employee = emp)
+                    employee_instance.delete()
+                    break
+        else:
+            employee_instance = Project_Employee.objects.get(project = proj ,employee = emp)
+            employee_instance.delete()
+        print()
+    return Response(status=HTTP_200_OK)

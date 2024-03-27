@@ -6,7 +6,7 @@ from rest_framework import permissions
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth import authenticate, login,logout
 
-from Employee.models import Employee,Employee_skill
+from Employee.models import Employee,Employee_skill,Designation
 from Projects.models import Project,Project_skill
 from Skills.models import Skill
 from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSerializer,ProjectSkillSerializer
@@ -17,7 +17,7 @@ from Api.authentication import JWTAuthentication
 
 
 #for getting all employees and creating a new employee only for superuser
-@api_view(['POST',"GET"])
+@api_view(["GET",'POST'])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
 @user_passes_test(lambda u: u.is_superuser)
@@ -28,16 +28,15 @@ def Employees_View(request):
         serializer = EmployeeSerializer(emps,many=True)
         return JsonResponse(serializer.data,safe=False)
     elif request.method == "POST":
-        serializer = EmployeeSerializer(data=request.data)
-        if serializer.is_valid():
-            print("valid")
-            serializer.save()
-            return Response(serializer.data,status=HTTP_201_CREATED)
-        else:
-            print("invalid",serializer.errors)
-        return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
+        try:
+            serializer=EmployeeSerializer()
+            request.data["designation"] = Designation.objects.get(id = request.data.get("designation"))
+            serializer.create(data = request.data)
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        except:
+            return Response(status=HTTP_400_BAD_REQUEST)
 
-
+#getting employee skills and modify the skills only for superuser
 @api_view(['GET','PUT','DELETE'])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])

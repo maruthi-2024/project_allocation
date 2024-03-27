@@ -24,7 +24,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
             raise AuthenticationFailed('Token expired')
         except jwt.InvalidTokenError: 
             raise AuthenticationFailed('Invalid token')
-        print(payload,"payload")
         username_or_email = payload.get('employee_identifier')
         if username_or_email is None:
             raise AuthenticationFailed('Employee identifier not found in JWT')
@@ -48,7 +47,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
             #issued time
             'iat': datetime.now().timestamp(),
         }
-        print(vars(emp),"jwt create")
         jwt_token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
         return jwt_token

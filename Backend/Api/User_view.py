@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.status import HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 
-from Employee.models import Employee,Employee_skill
+from Employee.models import Designation, Employee,Employee_skill
 from Projects.models import Project, Project_Employee
 from Skills.models import Skill
 from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSerializer
@@ -23,9 +23,11 @@ def User_details(request):
         serializer = EmployeeSerializer(emp)
         return JsonResponse(serializer.data,safe=False)
     elif request.method=="PUT":
-        serializer = EmployeeSerializer(emp,data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        serializer = EmployeeSerializer()
+        if serializer:
+            request.data["designation"] = Designation.objects.get(id = request.data.get("designation"))
+            emp = serializer.update(emp,data=request.data)
+            serializer=EmployeeSerializer(emp)
             return Response(serializer.data,status=HTTP_200_OK)
         else:
             print("invalid",serializer.errors)
@@ -34,6 +36,8 @@ def User_details(request):
         emp.delete()
         return Response(status=HTTP_204_NO_CONTENT)
 
+
+#to get the user projects
 @api_view(['GET'])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
@@ -48,7 +52,7 @@ def User_projects(request):
         return JsonResponse(serializer.data,safe=False)
 
 
-
+#to get user skills
 @api_view(['GET','PUT','DELETE'])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
