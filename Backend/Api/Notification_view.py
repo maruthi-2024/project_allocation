@@ -11,13 +11,24 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from Api.authentication import JWTAuthentication
 
-@api_view(["GET",'POST'])
+@api_view(["GET",'POST',"PUT"])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
 def Get_notifications(request):
     if request.method == "GET":
-        notifications = Notification.objects.filter(employee =request.user)
+        notifications = Notification.objects.filter(employee =request.user ,is_seen =False)
         print(notifications)
         serializer = NotificationSerializer(notifications,many=True)
         return Response(serializer.data,status = HTTP_200_OK)
+    elif request.method == "PUT":
+        notifications = Notification.objects.filter(employee =request.user ,is_seen =False)
+        notifications.update(is_seen=True)
+        print(request.data)
+        return Response(status=HTTP_200_OK)
+    elif request.method == "POST":
+        print(request.data)
+        serializer = NotificationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(status=HTTP_200_OK)
     return Response(status=HTTP_400_BAD_REQUEST)

@@ -1,10 +1,11 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate, } from 'react-router-dom';
 import Login from './components/Login';
 import Home from './components/Home';
 import Layout from './components/Layout';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 
 import ViewAllEmployees from './components//Home/Admin_view/Employees/ViewAllEmployees';

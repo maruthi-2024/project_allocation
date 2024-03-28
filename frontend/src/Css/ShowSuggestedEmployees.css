@@ -29,6 +29,7 @@
     border: none;
     padding: 5px 10px;
     border-radius: 4px;
+    width: 80%;
     color: #007bff; /* Link color */
   }
   
@@ -45,4 +46,3 @@
   .skills-list li {
     margin-bottom: 5px;
   }
-  

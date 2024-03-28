@@ -19,9 +19,9 @@ def employee_creation(sender,instance,created, **kwargs):
 def employee_skills(sender,instance,created, **kwargs):
     # employee = Employee.objects.get(id = instance.emp)
     if created: 
-        Notification.objects.create(employee=instance.employee, message = "Welcome to beehyv community")
+        Notification.objects.create(employee=instance.employee, message = "new skill added")
         print("new skill has been added")
     else:
-        Notification.objects.create(employee=instance.employee, message = "your details are updated")
+        Notification.objects.create(employee=instance.employee, message = "your skill ratings are updated")
         print("updated")
     print(sender,vars(instance),kwargs)

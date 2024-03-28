@@ -1,23 +1,15 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import urls from '../../../Api_Urls';
+import ShowSkills from '../ShowSkills';
 
-const ShowSkills = ({  project,skillsHasChanges,setSkillsHasChanges }) => {
+const ShowProjectSkills = ({ project, skillsHasChanges, setSkillsHasChanges }) => {
   const { token } = useSelector((state) => state.auth);
-  const [isEditing, setIsEditing] = useState(false);
-  const [skillOptions, setSkillOptions] = useState([]);
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [skills, setSkills] = useState([]);
-
-  const expLevel = {
-    BG: 'Beginner',
-    IN: 'Intermediate',
-    EX: 'Expert',
-  };
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    fetchSkillOptions();
     fetchProjectSkills();
   }, []);
 
@@ -40,24 +32,6 @@ const ShowSkills = ({  project,skillsHasChanges,setSkillsHasChanges }) => {
     }
   };
 
-  const fetchSkillOptions = async () => {
-    if (token) {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      };
-
-      try {
-        const response = await axios.get(urls.get_skills, config);
-        setSkillOptions(response.data);
-      } catch (err) {
-        alert(`Error in fetching skills: ${err}`);
-      }
-    }
-  };
 
   const handleSaveSkills = async () => {
     try {
@@ -67,19 +41,17 @@ const ShowSkills = ({  project,skillsHasChanges,setSkillsHasChanges }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-    
-      //  to check employee skills again by updated project skills
+
       var answer = window.confirm("Are you want to delete Employees who don't have modified skill set? if yes press ok");
       if (answer) {
         const putRequests = skills.map((skill) => axios.put(urls.get_proj_skills + project.id, skill, config));
         await Promise.all(putRequests);
-        await axios.get(urls.check_proj_alloc + project.id, config);  
+        await axios.get(urls.check_proj_alloc + project.id, config);
       }
       else {
         const putRequests = skills.map((skill) => axios.put(urls.get_proj_skills + project.id, skill, config));
         await Promise.all(putRequests);
       }
-      
       setSkillsHasChanges(!skillsHasChanges);
       setIsEditing(false);
       fetchProjectSkills(); 
@@ -88,11 +60,6 @@ const ShowSkills = ({  project,skillsHasChanges,setSkillsHasChanges }) => {
     }
   };
 
-  const handleEditSkill = (index, field, value) => {
-    const editedSkills = [...skills];
-    editedSkills[index][field] = value;
-    setSkills(editedSkills);
-  };
 
   const handleAddSkill = () => {
     setSkills([
@@ -106,100 +73,42 @@ const ShowSkills = ({  project,skillsHasChanges,setSkillsHasChanges }) => {
     ]);
   };
 
-  const toggleAccordion = () => {
-    !isAccordionOpen && fetchProjectSkills();
-    setIsAccordionOpen(!isAccordionOpen);
+  const handleDeleteSkill = async (index) => {
+    if (skills[index]['id']) {
+      try {
+        console.log(skills[index])
+        const res = await axios.delete(urls.get_proj_skills + project.id,
+          {
+            data: skills[index], headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        if (res) {
+          setSkillsHasChanges(!skillsHasChanges);
+          fetchProjectSkills(); // may be not required
+        }
+
+      } catch (err) {
+        alert(`Error in saving skills: ${err}`);
+      }
+    }
+    else {
+      console.log("not id")
+      const updatedSkills = [...skills];
+      updatedSkills.splice(index, 1); // Remove the skill at the specified index
+      setSkills(updatedSkills);
+    }
+
   };
 
+
   return (
-    <div className="accordion accordion-flush col-8" id="accordionFlushExample">
-      <div className="accordion-item">
-        <h2 className="accordion-header" id="flush-headingOne">
-          <button
-            className={`accordion-button ${isAccordionOpen ? '' : 'collapsed'}`}
-            type="button"
-            onClick={toggleAccordion}
-            aria-expanded={isAccordionOpen}
-            aria-controls="flush-collapseOne"
-          >
-            Required skills
-          </button>
-        </h2>
-        <div
-          id="flush-collapseOne"
-          className={`accordion-collapse collapse ${isAccordionOpen ? 'show' : ''}`}
-          aria-labelledby="flush-headingOne"
-          data-bs-parent="#accordionFlushExample"
-        >
-          <div className="accordion-body">
-            <table className="table table-borderless small">
-              <tbody>
-                {skills.map((skill, index) => (
-                  <tr key={index}>
-                    <td>
-                      {isEditing ? (
-                        <select
-                          name="skill"
-                          value={skill.skill_info.skill}
-                          onChange={(e) =>
-                            handleEditSkill(index, 'skill_info', {
-                              skill: e.target.value,
-                              id: e.target.selectedOptions[0].getAttribute('id'),
-                            })
-                          }
-                        >
-                          {skillOptions.map((sk) => (
-                            <option key={sk.id} value={sk.skill} id={sk.id}>
-                              {sk.skill}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        skill.skill_info.skill
-                      )}
-                    </td>
-                    <td>
-                      {isEditing ? (
-                        <select
-                          name="expertiseLevel"
-                          value={skill.expertiseLevel}
-                          onChange={(e) =>
-                            handleEditSkill(index, 'expertiseLevel', e.target.value)
-                          }
-                        >
-                          {Object.entries(expLevel).map(([key, value]) => (
-                            <option key={key} value={key}>
-                              {value}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        skill.expertise_level
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {isEditing ? (
-              <div className="d-flex justify-content-between">
-                <button type="button" onClick={handleAddSkill}>
-                  Add Skill
-                </button>
-                <button type="button" onClick={handleSaveSkills} >
-                  Save
-                </button>
-              </div>
-            ) : (
-              <button type="button" onClick={() => setIsEditing(true)}>
-                Edit
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+    <ShowSkills handleDeleteSkill={handleDeleteSkill} handleAddSkill={handleAddSkill} 
+    handleSaveSkills={handleSaveSkills} skills={skills} setSkills={setSkills} 
+    fetchSkills={fetchProjectSkills} 
+    isEditing={isEditing} setIsEditing={setIsEditing}/>
   );
 };
 
-export default ShowSkills;
+export default ShowProjectSkills;

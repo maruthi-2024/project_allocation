@@ -82,7 +82,7 @@ const Show_Suggested_employees = ({
     };
   
     return (
-      <div className='suggested-employees-container'>
+      <div className='suggested-employees-container table-responsive'>
         <table className='table table-bordered'>
           <thead>
             <tr>

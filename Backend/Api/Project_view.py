@@ -1,7 +1,7 @@
 from django.http import HttpResponse,JsonResponse,response
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.status import HTTP_201_CREATED,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_404_NOT_FOUND,HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR,HTTP_201_CREATED,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_404_NOT_FOUND,HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework import permissions
 from django.contrib.auth.decorators import user_passes_test,login_required
@@ -15,9 +15,12 @@ from Skills.models import Skill
 from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSerializer,ProjectSkillSerializer
 
 
-@api_view(["GET",'POST',"PUT"])
-@authentication_classes([JWTAuthentication])  
-@permission_classes([IsAuthenticated])
+
+
+
+@api_view(["GET",'POST',"PUT","DELETE"])
+# @authentication_classes([JWTAuthentication])  
+# @permission_classes([IsAuthenticated])
 def Project_skill_detail(request,pid):
     proj=Project.objects.get(id=pid)
     proj_skill_set= Project_skill.objects.filter(project=proj)
@@ -37,14 +40,21 @@ def Project_skill_detail(request,pid):
             print("invalid",serializer.errors,request.data)
         return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
     elif request.method == "DELETE":
+        print("del",request.data)
+        project_id = request.data.get('project')
+        skill_id = request.data.get('skill')
+
+        if project_id is None or skill_id is None:
+            return Response({"error": "Project ID or Skill ID is missing"}, status=HTTP_400_BAD_REQUEST)
+
         try:
-            proj_skill= Project_skill.objects.get(project=request.data['project'] , skill=request.data['skill'],expertiseLevel=request.data['expertiseLevel'])
+            proj_skill = Project_skill.objects.get(project=project_id, skill=skill_id)
             proj_skill.delete()
-        except :
-            print("no data available for deleting ")
-            return Response(status=HTTP_400_BAD_REQUEST)
-        
-        return Response(status=HTTP_204_NO_CONTENT)
+            return Response(status=HTTP_204_NO_CONTENT)
+        except Project_skill.DoesNotExist:
+            return Response({"error": "Project skill not found"}, status=HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["GET","POST","DELETE"])

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { Form, Button, Dropdown } from 'react-bootstrap'; // Assuming you have installed react-bootstrap
-import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import urls from '../../../Api_Urls';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AddProject = () => {
-  const { token, user } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
@@ -16,13 +15,8 @@ const AddProject = () => {
     lead: ''
   });
 
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -31,61 +25,67 @@ const AddProject = () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
       },
     };
-
+    console.log(formData);
     try {
-      const res = await axios.post(urls.create_proj, formData, config).then(res =>  navigate('/proj', { state: {project : {...res.data}} }));
+      const res = await axios.post(urls.create_proj, formData, config);
       console.log(res)
+      if (res) {
+        navigate("/home");
+      }
     } catch (err) {
       alert(`Error msg in creating projects:${err}`);
     }
-    console.log('Form submitted:', formData);
   };
-  if (token == null) return <Navigate to="/login" />;
-  return (
-    <div className="container d-flex justify-content-center">
-      <div className='card mt-5 col-lg-10 col-xs-12'>
-        <h1 className='my-2'>Create New Project</h1>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="title">
-            <Form.Label>Title</Form.Label>
-            <Form.Control type="text" name="title" value={formData.title} onChange={handleChange} />
-          </Form.Group>
-          <Form.Group controlId="description">
-            <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
-          </Form.Group>
-          <Form.Group controlId="starting_date">
-            <Form.Label>Starting Date</Form.Label>
-            <Form.Control type="date" name="starting_date" value={formData.starting_date} onChange={handleChange} />
-          </Form.Group>
-          <Form.Group controlId="deadline">
-            <Form.Label>Deadline</Form.Label>
-            <Form.Control type="date" name="deadline" value={formData.deadline} onChange={handleChange} />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
 
-        {/* <Form.Group controlId="selectedEmployees">
-          <Form.Label>Select Employees</Form.Label>
-          <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-              Select Employees
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleEmployeeSelect(['John Doe'])}>John Doe</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleEmployeeSelect(['Jane Smith'])}>Jane Smith</Dropdown.Item>
-             </Dropdown.Menu>
-          </Dropdown>
-        </Form.Group> */}
+
+  return (
+    <div className="container mt-4">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">Create New Project</h5>
+              <form id="projectForm">
+                <div className="mb-3 row">
+                  <label htmlFor="titleInput" className="col-sm-4 col-form-label">Title</label>
+                  <div className="col-sm-8">
+                    <input onChange={handleChange} type="text" className="form-control" id="titleInput" name="title" required />
+                  </div>
+                </div>
+                <div className="mb-3 row">
+                  <label htmlFor="descriptionInput" className="col-sm-4 col-form-label">Description</label>
+                  <div className="col-sm-8">
+                    <textarea onChange={handleChange} className="form-control" id="descriptionInput" rows={3} name="description" required></textarea>
+                  </div>
+                </div>
+                <div className="mb-3 row">
+                  <label htmlFor="startDateInput" className="col-sm-4 col-form-label">Starting Date</label>
+                  <div className="col-sm-8">
+                    <input onChange={handleChange} type="date" className="form-control" id="startDateInput" name="starting_date" required />
+                  </div>
+                </div>
+                <div className="mb-3 row">
+                  <label htmlFor="deadlineInput" className="col-sm-4 col-form-label">Deadline</label>
+                  <div className="col-sm-8">
+                    <input onChange={handleChange} type="date" className="form-control" id="deadlineInput" name="deadline" min={formData.starting_date} required />
+                  </div>
+                </div>
+                {/* <div className="mb-3 row">
+                  <label htmlFor="leadInput" className="col-sm-4 col-form-label">Lead</label>
+                  <div className="col-sm-8">
+                    <input onChange={handleChange} type="text" className="form-control" id="leadInput" name="lead" required />
+                  </div>
+                </div> */}
+                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
-
 
 export default AddProject;

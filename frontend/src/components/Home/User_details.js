@@ -20,6 +20,8 @@ const User_details = () => {
   const dispatch =useDispatch()
   const { token, user } = useSelector((state) => state.auth);
   const [skills, setSkills] = useState([]);
+  const [extraSkill,setExtraSkill]=useState(false)
+  const [skillReq,setSkillReq] = useState("")
   const formatToSimpleDate = (date) =>
     date !== null && date !== undefined ? format(new Date(date), "dd-MM-y") : undefined;
 
@@ -86,6 +88,26 @@ const User_details = () => {
     setIsEditing(false);
   };
 
+  const requestSkill = async () =>{
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    };
+    try{
+      const res=await axios.post(urls.get_notifications,{
+        "message":skillReq,
+        "employee":33,
+        "is_seen":false
+      },config)
+    }
+    catch{
+      alert("error in requesting skill")
+    }
+    setExtraSkill(!extraSkill)
+  }
   return (
     <div className="card p-2 mt-3 mx-2 border">
       <div className="d-flex justify-content-end">
@@ -154,7 +176,7 @@ const User_details = () => {
         {isEditing && <button onClick={handleSave}>Save</button>}
       </div>
 
-      <div className="accordion accordion-flush col-6" id="accordionFlushExample">
+      <div className="accordion accordion-flush col-7" id="accordionFlushExample">
         <div className="accordion-item">
           <h2 className="accordion-header" id="flush-headingOne">
             <button
@@ -184,12 +206,16 @@ const User_details = () => {
                         <td>{skill.expertise_level}</td>
                       </tr>
                     ))}
-                    <tr>
-                      <td></td>
-                    </tr>
                   </tbody>
                 )}
-              </table>
+                              </table>
+                {extraSkill ? <div className='m-2'>
+                <input name='extraSkill' type='text' onChange={e => setSkillReq(e.target.value)} placeholder='requesting Skill'></input>
+                <button className='m-2' onClick={() =>requestSkill()}>Submit</button>
+                </div>:
+                <div>
+                <button  className='m-0 p-1 btn btn-primary' onClick={() =>setExtraSkill(!extraSkill)}>Request Skill</button>
+                </div>}
             </div>
           </div>
         </div>

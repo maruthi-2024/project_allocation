@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import urls from '../Api_Urls';
 import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { Table, Button } from 'react-bootstrap'; 
 
-
-import PlusButton from "../../images/plusbutton.jpeg"
 const Projects = () => {
     const { token, user,is_user } = useSelector((state) => state.auth);
     const [loading, setLoading] = useState(false);
@@ -55,30 +54,33 @@ const Projects = () => {
             </>
         }
         return (
-            <div>
-               <h2 className='text-primary'><i>Projects</i></h2>
-              {!is_user &&  <p className='btn d-flex justify-content-end h1 text-info' onClick={projectaddhandler}>Add project</p>}
-                <div className="container">
-                <div class="row">
-                    {projs.map(project => (
-                    <div className="m-3 col-lg-5" key={project.id} onClick={() => projectHandler(project)} >
-                        <div className="flex card">
-                            <div className="card-header bg-info">
-                                    <span className='h3'  style={{fontFamily: "sans-serif"}}>{project.title}</span>
-                                    <span className='d-flex justify-content-end '>
-                                     {project.starting_date} to  {project.deadline}
-                                    </span>
-                            </div>
-                            <div className="card-body">
-                                <h5 className="card-title">Project Lead : {project.project_lead? project.project_lead.username:null}</h5>
-                                <p className="card-text"> {project.description}</p>
-                            </div>
-                        </div>    
-                    </div>
-                    ))}
-                    </div>
-                </div>
-            </div>
+          <div>
+      <h2 className='text-dark bg-info rounded-pill p-2'><i>Projects</i></h2>
+      {!is_user && <div className='btn d-flex justify-content-end ' onClick={projectaddhandler}>
+        <div className='h5 text-info'>Add project</div></div>}
+      <div className="container">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Duration</th>
+              <th>Project Lead</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projs.map(project => (
+              <tr key={project.id} onClick={() => projectHandler(project)}>
+                <td>{project.title}</td>
+                <td>{project.starting_date} to {project.deadline}</td>
+                <td>{project.project_lead ? project.project_lead.username : 'N/A'}</td>
+                <td>{project.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+    </div>
           )
       }
   

@@ -1,6 +1,6 @@
 from django.http import HttpResponse,JsonResponse,response
 from rest_framework.decorators import api_view,permission_classes
-from rest_framework.status import HTTP_201_CREATED,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_201_CREATED,HTTP_404_NOT_FOUND,HTTP_500_INTERNAL_SERVER_ERROR,HTTP_400_BAD_REQUEST,HTTP_200_OK,HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework import permissions
 from django.contrib.auth.decorators import user_passes_test,login_required
@@ -58,6 +58,16 @@ def Employee_skills(request,eid):
             print("invalid",serializer.errors)
         return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
     elif request.method == "DELETE":
+        skill_id = request.data.get('skill')
+        skill=Skill.objects.get(id=skill_id)
+        try:
+            emp_skill= Employee_skill.objects.get(employee=emp , skill=skill)
+            emp_skill.delete()
+            return Response(status=HTTP_204_NO_CONTENT)
+        except Project_skill.DoesNotExist:
+            return Response({"error": "Employee skill not found"}, status=HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=HTTP_500_INTERNAL_SERVER_ERROR)
         try:
             skill=Skill.objects.get(id=request.data['skill'])
             emp_skill= Employee_skill.objects.get(employee=emp , skill=skill,expertiseLevel=request.data['expertiseLevel'])
