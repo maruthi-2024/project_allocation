@@ -58,8 +58,8 @@ def Project_skill_detail(request,pid):
 
 
 @api_view(["GET","POST","DELETE"])
-@authentication_classes([JWTAuthentication])  
-@permission_classes([IsAuthenticated])
+# @authentication_classes([JWTAuthentication])  
+# @permission_classes([IsAuthenticated])
 def Employees_in_Project(request,pid):
     req_project = Project.objects.get(id=pid)
     if request.method == "GET":
@@ -73,7 +73,7 @@ def Employees_in_Project(request,pid):
         if employee_id:
             try:
                 employee = Employee.objects.get(id=employee_id)
-                new_employee, created = Project_Employee.objects.get_or_create(
+                proj_employee, created = Project_Employee.objects.get_or_create(
                     employee=employee,
                     project=req_project
                 )
@@ -81,6 +81,22 @@ def Employees_in_Project(request,pid):
                     return Response(status=HTTP_201_CREATED)
                 else:
                     return Response(status=HTTP_200_OK)
+            except Employee.DoesNotExist:
+                return Response({"error": "Employee not found"}, status=HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Employee ID not provided"}, status=HTTP_400_BAD_REQUEST)
+    if request.method == "DELETE":
+        print(request.data)
+        employee_id = request.data.get("employee")
+        if employee_id:
+            try:
+                employee = Employee.objects.get(id=employee_id)
+                proj_employee = Project_Employee.objects.get(
+                    employee=employee,
+                    project=req_project
+                )
+                proj_employee.delete()
+                return Response(status=HTTP_200_OK)
             except Employee.DoesNotExist:
                 return Response({"error": "Employee not found"}, status=HTTP_404_NOT_FOUND)
         else:

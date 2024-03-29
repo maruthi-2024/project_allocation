@@ -9,14 +9,12 @@ import Projects  from './Home/Projects';
 import User_details from './Home/User_details';
 
 
-
 export const Home = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { token, user } = useSelector((state) => state.auth);
-  useEffect(() => {
-    setLoading(true);
-    async function fetchUserDetails() {
+  
+     const fetchUserDetails = async () => {
       if (token) {
         const config = {
           headers: {
@@ -35,7 +33,8 @@ export const Home = () => {
       }
       setLoading(false);
     }
-
+  useEffect(() => {
+    setLoading(true);
     fetchUserDetails();
   }, [token]);
 

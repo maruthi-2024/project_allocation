@@ -1,20 +1,19 @@
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import urls from '../../../Api_Urls';
-import Show_suggested_Employees from './Get_suggested_Employees';
 import Get_suggested_Employees from './Get_suggested_Employees';
 import Display_Employees_In_Project from './Display_Employees_In_Project';
 import ShowSkills from './ShowProjectSkills';
-
+import { fetchUser } from '../../../../redux/reducers/authSlice';
+import Home from '../../../Home';
 const Admin_Project_view = () => {
-
   const location = useLocation();
   const project = location?.state?.project || null;
 
-  const { token ,is_user} = useSelector((state) => state.auth);
+  const { token,is_user,user} = useSelector((state) => state.auth);
 
   const [skillsHasChanges, setSkillsHasChanges] = useState(false);
   const [suggEmpHasChanges, setsuggEmpHasChanges] = useState(false);
@@ -52,7 +51,7 @@ const Admin_Project_view = () => {
             </div>
           </div>
           <div className="col">
-            <Display_Employees_In_Project project={project} skillsHasChanges={skillsHasChanges} suggEmpHasChanges={suggEmpHasChanges}/>
+            <Display_Employees_In_Project user={user} project={project} skillsHasChanges={skillsHasChanges} suggEmpHasChanges={suggEmpHasChanges} setsuggEmpHasChanges={setsuggEmpHasChanges} />
             {!is_user && <Get_suggested_Employees project={project}  skillsHasChanges={skillsHasChanges} suggEmpHasChanges={suggEmpHasChanges} setsuggEmpHasChanges={setsuggEmpHasChanges} />}
           </div>
         </div>

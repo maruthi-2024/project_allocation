@@ -27,6 +27,7 @@ const App = () => {
             <Route exact path="/proj" element={<Admin_Project_view/>}/>
             <Route exact path='/add_proj' element={<AddProject/>}/>
             <Route exact path='/add_emp' element={<Add_Employee/>}/>
+            <Route path='*' element={<Home />}/>
           </Routes>
         </Layout>
       </BrowserRouter>

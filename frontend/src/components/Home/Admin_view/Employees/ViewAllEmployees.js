@@ -8,9 +8,9 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 const ViewAllEmployees = () => {
   const [employees, setEmployees] = useState([])
-  const { token, is_user } = useSelector((state) => state.auth);
+  const { token,is_user } = useSelector((state) => state.auth);
+ 
   const navigate = useNavigate();
-  
   useEffect(() => {
     async function fetchAllEmployees() {
       if (token) {

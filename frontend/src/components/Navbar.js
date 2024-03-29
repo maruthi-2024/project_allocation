@@ -15,11 +15,10 @@ import "../Css/Navbar.css"
 
 const NavbarComponent = () => {
   const dispatch = useDispatch();
-  const { token,is_user, username } = useSelector(state => state.auth);
+  const { token,username,is_user } = useSelector(state => state.auth);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0)
   const [isSeen, setIsSeen] = useState(false)
-
   const fetchNotifications = async () => {
     const config = {
       headers: {
