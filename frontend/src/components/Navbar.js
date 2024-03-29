@@ -3,10 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logoutUser } from '../redux/reducers/authSlice';
 import Logo from '../images/beehyvlogo.png';
-import NotificationComponent from './Notification';
-import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -18,9 +15,9 @@ import "../Css/Navbar.css"
 
 const NavbarComponent = () => {
   const dispatch = useDispatch();
-  const { token, user, is_user, username } = useSelector(state => state.auth);
+  const { token,is_user, username } = useSelector(state => state.auth);
   const [notifications, setNotifications] = useState([]);
-  const [notificationCount, setNotificationCount] = useState(1)
+  const [notificationCount, setNotificationCount] = useState(0)
   const [isSeen, setIsSeen] = useState(false)
 
   const fetchNotifications = async () => {
@@ -88,10 +85,10 @@ const NavbarComponent = () => {
 
         <Navbar expand="lg" className="bg-body-tertiary d-flex justify-content-between align-items-center">
           <Container fluid>
-            <Navbar.Brand href="/home">
+            <Navbar.Brand as={Link} to="/home">
               <img src={Logo} alt="Logo" className="logo-image mx-3" style={{ maxWidth: '100px', minWidth: '25px' }} />
             </Navbar.Brand>
-            {!is_user && <Nav.Link href='/emps' className="me-auto my-2 my-lg-0 nav-link-hover p-2">Employees</Nav.Link>}
+            {!is_user && <Nav.Link  as={Link} to="/emps" className="me-auto my-2 my-lg-0 nav-link-hover p-2">Employees</Nav.Link>}
 
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
@@ -116,7 +113,7 @@ const NavbarComponent = () => {
                   )}
                 </NavDropdown>
                 <div className="mx-3" dangerouslySetInnerHTML={{ __html: `Hello &#128075; ${username}` }}></div>
-                <Nav.Link href='/emps' className="mx-3 nav-link-hover" onClick={submitHandler}>Log out</Nav.Link>
+                <Nav.Link as={Link} to='/home' className="mx-3 nav-link-hover" onClick={submitHandler}>Log out</Nav.Link>
               </Nav>
             </Navbar.Collapse>
           </Container>

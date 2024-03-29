@@ -74,13 +74,13 @@ const Show_Suggested_employees = ({
             )
           );
           setSelectedEmployees([]);
-          setsuggEmpHasChanges(!suggEmpHasChanges); // Update parent state after successful submit
+          setsuggEmpHasChanges(!suggEmpHasChanges); 
         } catch (err) {
           alert(`Error msg: ${err}`);
         }
       }
     };
-  
+    
     return (
       <div className='suggested-employees-container table-responsive'>
         <table className='table table-bordered'>

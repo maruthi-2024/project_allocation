@@ -18,7 +18,7 @@ import { fetchUser } from '../../redux/reducers/authSlice';
 import "../../Css/User_details.css";
 const User_details = () => {
   const dispatch =useDispatch()
-  const { token, user } = useSelector((state) => state.auth);
+  const { token, user ,is_user} = useSelector((state) => state.auth);
   const [skills, setSkills] = useState([]);
   const [extraSkill,setExtraSkill]=useState(false)
   const [skillReq,setSkillReq] = useState("")
@@ -97,9 +97,8 @@ const User_details = () => {
       },
     };
     try{
-      const res=await axios.post(urls.get_notifications,{
-        "message":skillReq,
-        "employee":33,
+      const res=await axios.post(urls.req_skill,{
+        "message":`${user.username} requested ${skillReq}`,
         "is_seen":false
       },config)
     }
@@ -176,7 +175,7 @@ const User_details = () => {
         {isEditing && <button onClick={handleSave}>Save</button>}
       </div>
 
-      <div className="accordion accordion-flush col-7" id="accordionFlushExample">
+   {is_user&&   <div className="accordion accordion-flush col-7" id="accordionFlushExample">
         <div className="accordion-item">
           <h2 className="accordion-header" id="flush-headingOne">
             <button
@@ -219,7 +218,7 @@ const User_details = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
 
     </div>
   );

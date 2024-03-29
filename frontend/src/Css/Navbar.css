@@ -9,15 +9,16 @@
   
   .nav-link-hover:hover {
     color: #fff; 
-    background-color: #007bff !important; 
     border-radius: 10px; 
+    background-color: #007bff !important; 
+
   }
   
   .dropdown-menu-left {
     right: auto !important; 
   }
   
-  /* Hover effect for Bell button */
+ 
   .navbar .nav-item .nav-link.dropdown-toggle:hover {
     color: #fff !important;
     background-color: #007bff !important; 
@@ -25,28 +26,16 @@
   }
   
   .dropdown-menu {
-    max-width: 20px; /* Adjust the maximum width as needed */
-    white-space: normal; /* Allow content to wrap */
+    white-space: normal;
+    width:15em;
+    padding:3px
   }
-  
-  .dropdown-menu {
-    white-space: normal; /* Allow content to wrap */
-  }
+ 
   
   .dropdown-item-text {
-    overflow-wrap: break-word; /* Wrap long words if needed */
+    overflow-wrap: break-word; 
   }
   
 .navbar-expand-lg .navbar-nav .dropdown-menu{
     right :0;
   }
-/*  
-  .dropdown-menu[data-bs-popper] {
-    top: 100%;
-    margin-top: var(--bs-dropdown-spacer);
-}
-
-.my-dropdown{
-  position: relative;
-  right:0
-} */

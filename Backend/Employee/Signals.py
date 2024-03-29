@@ -24,4 +24,3 @@ def employee_skills(sender,instance,created, **kwargs):
     else:
         Notification.objects.create(employee=instance.employee, message = "your skill ratings are updated")
         print("updated")
-    print(sender,vars(instance),kwargs)

@@ -23,16 +23,25 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         fields = ['id','password','designation','gender','username','first_name','last_name','emp_gender','email','date_joined','contact_address','emp_designation','blood_group','phone_number','is_superuser']
         extra_kwargs = {'password': {'write_only': True}}
+
     def create(self, data):
-        emp = super().create(data)
-        emp.set_password(data['password'])
-        emp.save()
+        try:
+            emp = super().create(data)
+            if data["designation"].designation=="Project Lead":
+                emp.is_superuser=True
+            emp.set_password(data['password'])
+            emp.save()
+        except Exception as e:
+            print(e,"serializer create error")
         return emp
     
     def update(self, instance, data):
         emp = super().update(instance, data)
         try:
             emp.set_password(data['password'])
+            emp.save()
+            if data["designation"].designation=="Project Lead":
+                emp.is_superuser=True
             emp.save()
         except KeyError:
             pass

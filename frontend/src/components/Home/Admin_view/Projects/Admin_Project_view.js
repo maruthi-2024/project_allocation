@@ -14,7 +14,7 @@ const Admin_Project_view = () => {
   const location = useLocation();
   const project = location?.state?.project || null;
 
-  const { token } = useSelector((state) => state.auth);
+  const { token ,is_user} = useSelector((state) => state.auth);
 
   const [skillsHasChanges, setSkillsHasChanges] = useState(false);
   const [suggEmpHasChanges, setsuggEmpHasChanges] = useState(false);
@@ -53,7 +53,7 @@ const Admin_Project_view = () => {
           </div>
           <div className="col">
             <Display_Employees_In_Project project={project} skillsHasChanges={skillsHasChanges} suggEmpHasChanges={suggEmpHasChanges}/>
-            <Get_suggested_Employees project={project}  skillsHasChanges={skillsHasChanges} suggEmpHasChanges={suggEmpHasChanges} setsuggEmpHasChanges={setsuggEmpHasChanges} />
+            {!is_user && <Get_suggested_Employees project={project}  skillsHasChanges={skillsHasChanges} suggEmpHasChanges={suggEmpHasChanges} setsuggEmpHasChanges={setsuggEmpHasChanges} />}
           </div>
         </div>
       </div>

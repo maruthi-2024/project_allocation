@@ -14,7 +14,8 @@ const urls={
     "get_deigsnations" : BASE_URL + "des/",
     "get_emps_in_proj" : BASE_URL + "emps_in_proj/",
     "check_proj_alloc":BASE_URL +"check_proj_alloc/",
-    "get_notifications":BASE_URL + "get_notifications/"
+    "get_notifications":BASE_URL + "get_notifications/",
+    "req_skill":BASE_URL+"req_skill",
 }
 
 export default urls;

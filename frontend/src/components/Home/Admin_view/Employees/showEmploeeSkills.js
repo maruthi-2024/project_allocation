@@ -9,6 +9,9 @@ const ShowEmployeeSkills = ({ user }) => {
   const { token } = useSelector((state) => state.auth);
   const [skills, setSkills] = useState([])
   const [isEditing, setIsEditing] = useState(false);
+
+ 
+
   const fetchEmployeeSkills = async () => {
     if (token) {
       const config = {
@@ -31,6 +34,7 @@ const ShowEmployeeSkills = ({ user }) => {
   }
  
   const handleSaveSkills = async () => {
+    console.log("hello")
     try {
       const config = {
         headers: {
@@ -40,7 +44,7 @@ const ShowEmployeeSkills = ({ user }) => {
       };
       skills.map(async skill => { await axios.put(urls.get_emp_skills + user.id, skill, config) })
       setIsEditing(false);
-      fetchEmployeeSkills()
+
     } catch (err) {
       alert(`Error saving skills: ${err}`);
     }
@@ -73,7 +77,6 @@ const ShowEmployeeSkills = ({ user }) => {
             },
           })
         if (res) {
-          setSkillsHasChanges(!skillsHasChanges);
           fetchEmployeeSkills(); // may be not required
         }
 
@@ -89,7 +92,6 @@ const ShowEmployeeSkills = ({ user }) => {
     }
 
   };
-
   return (
     <ShowSkills handleDeleteSkill={handleDeleteSkill} handleAddSkill={handleAddSkill} handleSaveSkills={handleSaveSkills} skills={skills} setSkills={setSkills} fetchSkills={fetchEmployeeSkills}
     isEditing={isEditing} setIsEditing={setIsEditing}/>

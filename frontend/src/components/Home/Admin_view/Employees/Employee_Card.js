@@ -9,8 +9,10 @@ import MaleLogo from '../../../../images/Employee_male.png';
 import ShowEmployeeSkills from './showEmploeeSkills';
 
 export const Employee_Card = ({ user }) => {
+    const { token ,is_user} = useSelector((state) => state.auth);
     return (
         <div className="card p-2 mt-3 mx-2 border">
+              {console.log(is_user,"empcard")}
             <div className="mx-auto text-center  p-2 " >
                 <img id="profile_pic" src={user.emp_gender == "Male" ? MaleLogo : FemaleLogo} width="45%" />
                 <div className='d-flex flex-column justify-content-center'>

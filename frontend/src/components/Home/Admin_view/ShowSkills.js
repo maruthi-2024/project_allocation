@@ -4,8 +4,7 @@ import axios from 'axios';
 import { MdOutlineDelete } from "react-icons/md";
 import urls from '../../Api_Urls';
 const ShowSkills = ({ handleDeleteSkill, handleAddSkill, handleSaveSkills, skills, setSkills, fetchSkills, isEditing, setIsEditing }) => {
-    const { token } = useSelector((state) => state.auth);
-
+    const { token,is_user } = useSelector((state) => state.auth);
     const [skillOptions, setSkillOptions] = useState([]);
     const [isAccordionOpen, setIsAccordionOpen] = useState(false);
     useEffect(() => {
@@ -57,6 +56,7 @@ const ShowSkills = ({ handleDeleteSkill, handleAddSkill, handleSaveSkills, skill
     const toggleAccordion = () => {
         !isAccordionOpen && fetchSkills();
         setIsAccordionOpen(!isAccordionOpen);
+        setIsEditing(false)
     };
 
     return (
@@ -92,9 +92,11 @@ const ShowSkills = ({ handleDeleteSkill, handleAddSkill, handleSaveSkills, skill
                                                     <select
                                                         id='sk'
                                                         name='skill'
-                                                        value={skill.skill_info.skill}
+                                                        value={skill.skill_info.skill || ""}
                                                         onChange={(e) => handleEditSkill(index, e)}
+                                
                                                     >
+                                                         <option value="" disabled>Select Skill</option>
                                                         {skillOptions.map((sk) => <>
                                                             <option key={index} value={sk.skill} id={sk.id} name="skill">
                                                                 {sk.skill}
@@ -133,17 +135,21 @@ const ShowSkills = ({ handleDeleteSkill, handleAddSkill, handleSaveSkills, skill
                         </table>
                         {isEditing ? (
                             <div className="d-flex justify-content-between">
-                                <button type="button" onClick={handleAddSkill}>
-                                    Add Skill
+                                <button type="button" className='bg-primary rounded-pill p-0 px-3' onClick={handleAddSkill}>
+                                    Add
                                 </button>
-                                <button type="button" onClick={handleSaveSkills}>
+                                <button type="button" className='bg-success rounded-pill px-3' onClick={handleSaveSkills}>
                                     Save
                                 </button>
-                            </div>
+                            </div>  
                         ) : (
-                            <button type="button" onClick={() => setIsEditing(true)}>
+                            <>
+                             {!is_user &&  <button type="button" className=' rounded-pill px-4' onClick={() => setIsEditing(true)}>
                                 Edit
-                            </button>
+                            </button>}
+                            </>
+                          
+
                         )}
                     </div>
                 </div>

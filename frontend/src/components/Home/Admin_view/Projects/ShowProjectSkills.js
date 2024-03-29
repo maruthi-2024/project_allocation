@@ -5,7 +5,7 @@ import urls from '../../../Api_Urls';
 import ShowSkills from '../ShowSkills';
 
 const ShowProjectSkills = ({ project, skillsHasChanges, setSkillsHasChanges }) => {
-  const { token } = useSelector((state) => state.auth);
+  const { token,is_user } = useSelector((state) => state.auth);
   const [skills, setSkills] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 

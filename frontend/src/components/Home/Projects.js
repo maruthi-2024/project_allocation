@@ -35,7 +35,8 @@ const Projects = () => {
     },[])
 
     const projectHandler=(key) => {
-      !is_user && navigate('/proj', { state: {project : {...key}} });
+     navigate('/proj', { state: {project : {...key}} });
+    //    !is_user &&
     }
 
     const projectaddhandler=()=>{

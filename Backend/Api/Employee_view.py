@@ -22,7 +22,7 @@ from Api.authentication import JWTAuthentication
 @permission_classes([IsAuthenticated])
 @user_passes_test(lambda u: u.is_superuser)
 def Employees_View(request):
-    print(request.user)
+    #print(request.user)
     if request.method == "GET":
         emps= Employee.objects.all()
         serializer = EmployeeSerializer(emps,many=True)
@@ -31,10 +31,12 @@ def Employees_View(request):
         try:
             serializer=EmployeeSerializer()
             request.data["designation"] = Designation.objects.get(id = request.data.get("designation"))
+            #print("rtrtsdnkn")
             serializer.create(data = request.data)
+            #print("sdnkn")
             return Response(serializer.data, status=HTTP_201_CREATED)
-        except:
-            return Response(status=HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
 
 #getting employee skills and modify the skills only for superuser
 @api_view(['GET','PUT','DELETE'])
@@ -68,15 +70,6 @@ def Employee_skills(request,eid):
             return Response({"error": "Employee skill not found"}, status=HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=HTTP_500_INTERNAL_SERVER_ERROR)
-        try:
-            skill=Skill.objects.get(id=request.data['skill'])
-            emp_skill= Employee_skill.objects.get(employee=emp , skill=skill,expertiseLevel=request.data['expertiseLevel'])
-            emp_skill.delete()
-        except :
-            print("no data available for deleting ")
-            return Response(status=HTTP_400_BAD_REQUEST)
-        
-        return Response(status=HTTP_204_NO_CONTENT)
 
 
 
@@ -90,7 +83,6 @@ def Employee_skills(request,eid):
 #      elif request.method == "POST":
 #         serializer = EmployeeSkillSerializer(data=request.data)
 #         if serializer.is_valid():
-#             print("valid")
 #             serializer.save()
 #             return Response(serializer.data,status=HTTP_201_CREATED)
 #         else:

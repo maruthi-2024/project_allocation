@@ -28,10 +28,10 @@ def Project_skill_detail(request,pid):
         serializer = ProjectSkillSerializer(proj_skill_set,many=True)
         return JsonResponse(serializer.data,safe=False)
     elif request.method=="PUT" or request.method=="POST":
-        print(request.data,"-------------------")
+        #print(request.data,"-------------------")
         skill=Skill.objects.get(id =request.data['skill'])
         proj_skill ,created= Project_skill.objects.get_or_create(project=proj ,skill=skill)
-        print(vars(proj_skill),created)
+        #print(vars(proj_skill),created)
         serializer = ProjectSkillSerializer(proj_skill,data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -40,7 +40,7 @@ def Project_skill_detail(request,pid):
             print("invalid",serializer.errors,request.data)
         return Response(serializer.errors,status=HTTP_400_BAD_REQUEST)
     elif request.method == "DELETE":
-        print("del",request.data)
+        #print("del",request.data)
         project_id = request.data.get('project')
         skill_id = request.data.get('skill')
 
@@ -106,7 +106,7 @@ def Project_viewset(request):
         if serializer.is_valid():
             serializer.save()
             try:
-                print(serializer.data)
+                #print(serializer.data)
                 project=Project.objects.get(id= serializer.data["id"])
                 employee = Employee.objects.get(id = serializer.data["lead"])
                 Project_Employee.objects.create(project=project,employee = employee)
@@ -179,15 +179,15 @@ def Suggested_Employees(request,pid):
     
 @api_view(["GET"])
 def Check_employees_satisfaction(request,pid):
-    print("checking--------")
+    #print("checking--------")
     proj=Project.objects.get(id=pid)
     proj_req_skills=Project_skill.objects.filter(project_id=pid)
     proj_req_skill_ids= set(proj_req_skills.values_list('skill'))
     proj_req_skill_dict=dict(proj_req_skills.values_list('skill','expertiseLevel'))
-    print(proj_req_skill_dict,"idtc proj")
+    #print(proj_req_skill_dict,"idtc proj")
     employee_set=Project_Employee.objects.filter(project=proj).values('employee')
     employee_ids = [item['employee'] for item in employee_set.values('employee')]
-    print(employee_ids,"----" )
+    #print(employee_ids,"----" )
     if proj.lead_id in employee_ids:
         employee_ids.remove(proj.lead_id)
     emps = Employee.objects.filter(id__in=employee_ids)
@@ -201,7 +201,7 @@ def Check_employees_satisfaction(request,pid):
         }
         if proj_req_skill_ids.issubset(emp_skill_ids):
             emp_skill_dict = dict(emp_skill_set.values_list('skill','expertiseLevel'))
-            print(emp_skill_dict,"emp  ditc")
+            #print(emp_skill_dict,"emp  ditc")
             for proj_skill_id in proj_req_skill_dict.keys():
                 if exp_level[proj_req_skill_dict[proj_skill_id]] > exp_level[emp_skill_dict[proj_skill_id]]:
                     employee_instance = Project_Employee.objects.get(project = proj ,employee = emp)
@@ -210,5 +210,5 @@ def Check_employees_satisfaction(request,pid):
         else:
             employee_instance = Project_Employee.objects.get(project = proj ,employee = emp)
             employee_instance.delete()
-        print()
+        #print()
     return Response(status=HTTP_200_OK)

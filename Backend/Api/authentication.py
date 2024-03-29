@@ -14,13 +14,13 @@ class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
 
         jwt_token = request.META.get('HTTP_AUTHORIZATION')
-        print("hey",jwt_token)
-        print("he;;p")
+        #print("hey",jwt_token)
+        #print("he;;p")
         if jwt_token is None:
             return None
-        print("hello")
+        #print("hello")
         jwt_token = JWTAuthentication.get_the_token_from_header(jwt_token) 
-        print("heyy")
+        #print("heyy")
         try:
             payload = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
@@ -30,7 +30,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
         username_or_email = payload.get('employee_identifier')
         if username_or_email is None:
             raise AuthenticationFailed('Employee identifier not found in JWT')
-        print("hey ",username_or_email)
+        #print("hey ",username_or_email)
         emp = Employee.objects.filter(username=username_or_email).first()
         if emp is None:
             emp = Employee.objects.filter(email=username_or_email).first()
