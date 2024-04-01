@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ import Home from '../../../Home';
 const Admin_Project_view = () => {
   const location = useLocation();
   const project = location?.state?.project || null;
-
+  
   const { token,is_user,user} = useSelector((state) => state.auth);
 
   const [skillsHasChanges, setSkillsHasChanges] = useState(false);

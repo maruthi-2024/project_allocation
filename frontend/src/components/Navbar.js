@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logoutUser } from '../redux/reducers/authSlice';
@@ -75,8 +75,8 @@ const NavbarComponent = () => {
           background: 'linear-gradient(51deg, rgba(44,107,122,1) 0%, rgba(9,121,61,1) 0%, rgba(81,143,7,1) 0%, rgba(6,161,129,1) 19%, rgba(0,236,255,1) 100%)',
           color: 'white',
         }}>
-          <marquee className="text-dark opacity-75 h4" style={{ margin: 0 }}>
-            Welcome to Beehyv Project Allocation site
+          <marquee className="text-dark opacity-75 h4 p-0 m-0 " style={{ margin: 0 ,height:'4.8vh'}}>
+            <i>Welcome to Beehyv Project Allocation site</i>
           </marquee>
         </nav>
       ) : (
