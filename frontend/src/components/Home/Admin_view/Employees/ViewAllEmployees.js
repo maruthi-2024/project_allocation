@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import urls from '../../../Api_Urls';
 import Employee_Card from './Employee_Card';
-import { Navigate, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 const ViewAllEmployees = () => {
   const [employees, setEmployees] = useState([])

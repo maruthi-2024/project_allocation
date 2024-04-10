@@ -19,8 +19,8 @@ from .serializers import EmployeeSerializer,ProjectSerializer,EmployeeSkillSeria
 
 
 @api_view(["GET",'POST',"PUT","DELETE"])
-# @authentication_classes([JWTAuthentication])  
-# @permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
 def Project_skill_detail(request,pid):
     proj=Project.objects.get(id=pid)
     proj_skill_set= Project_skill.objects.filter(project=proj)
@@ -58,8 +58,8 @@ def Project_skill_detail(request,pid):
 
 
 @api_view(["GET","POST","DELETE"])
-# @authentication_classes([JWTAuthentication])  
-# @permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])  
+@permission_classes([IsAuthenticated])
 def Employees_in_Project(request,pid):
     req_project = Project.objects.get(id=pid)
     if request.method == "GET":

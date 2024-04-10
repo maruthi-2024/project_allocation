@@ -21,28 +21,58 @@ const Add_Employee = () => {
     gender: '',
     password: '',
   });
+  const [errors, setErrors] = useState({}); 
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' }); 
   };
+
+  const validateEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const validateRequired = (value) => value.trim() !== ''; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    };
 
-    try {
-      const res = await axios.post(urls.get_all_emp, formData, config);
-      if(res){
-        navigate("/emps")
+    const validationErrors = {}; 
+    let isValid = true;
+
+    if (!validateEmail(formData.email)) {
+      validationErrors.email = 'Invalid email address';
+      isValid = false;
+    }
+
+    ['username', 'first_name', 'last_name', 'date_joined', 'designation', 'gender', 'password'].forEach(field => {
+      if (!validateRequired(formData[field])) {
+        validationErrors[field] = 'This field is required';
+        isValid = false;
       }
-    } catch (err) {
-      alert(`Error adding employee: ${err}`);
+    });
+
+    setErrors(validationErrors); 
+
+    if (isValid) {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const res = await axios.post(urls.get_all_emp, formData, config);
+        if (res) {
+          navigate("/emps");
+        }
+      } catch (err) {
+        alert(`Error adding employee: ${err}`);
+      }
     }
   };
+
 
  useEffect(() => {
   async function fetchdesignations() {
@@ -73,42 +103,54 @@ const Add_Employee = () => {
           <div class="card-body">
             <h5 class="card-title">Employee Registration</h5>
             <form id="registrationForm">
+            {errors.username && <div className="text-danger">{errors.username}</div>}
               <div class="mb-3 row">
                 <label for="usernameInput" class="col-sm-4 col-form-label">Username</label>
                 <div class="col-sm-8">
                   <input  onChange={handleChange}  type="text" class="form-control" id="usernameInput" name="username" required/>
                 </div>
               </div>
+              {errors.first_name && <div className="text-danger">{errors.first_name}</div>}
               <div class="mb-3 row">
                 <label for="firstNameInput" class="col-sm-4 col-form-label">First Name</label>
+               
                 <div class="col-sm-8">
                   <input  onChange={handleChange}  type="text" class="form-control" id="firstNameInput" name="first_name" required/>
                 </div>
               </div>
+              {errors.last_name && <div className="text-danger">{errors.last_name}</div>}
               <div class="mb-3 row">
                 <label for="lastNameInput" class="col-sm-4 col-form-label">Last Name</label>
+               
                 <div class="col-sm-8">
                   <input  onChange={handleChange}  type="text" class="form-control" id="lastNameInput" name="last_name" required/>
                 </div>
               </div>
+
+              {errors.email && <div className="text-danger">{errors.email}</div>}
               <div class="mb-3 row">
                 <label for="emailInput" class="col-sm-4 col-form-label">Email address</label>
                 <div class="col-sm-8">
                   <input  onChange={handleChange}  type="email" class="form-control" id="emailInput" name="email" required/>
                 </div>
               </div>
+
+              {errors.date_joined && <div className="text-danger">{errors.date_joined}</div>}
               <div class="mb-3 row">
                 <label for="dateJoinedInput" class="col-sm-4 col-form-label">Date Joined</label>
                 <div class="col-sm-8">
                   <input  onChange={handleChange}  type="date" class="form-control" id="dateJoinedInput" name="date_joined" required/>
                 </div>
               </div>
+
               <div class="mb-3 row">
                 <label for="addressInput" class="col-sm-4 col-form-label">Contact Address</label>
                 <div class="col-sm-8">
                   <input  onChange={handleChange}  type="text" class="form-control" id="addressInput" name="contact_address"/>
                 </div>
               </div>
+
+              {errors.designation && <div className="text-danger">{errors.designation}</div>}
               <div class="mb-3 row">
                 <label for="designationInput" class="col-sm-4 col-form-label">Designation</label>
                 <div class="col-sm-8">
@@ -127,12 +169,18 @@ const Add_Employee = () => {
                   <input  onChange={handleChange}  type="text" class="form-control" id="bloodGroupInput" name="blood_group"/>
                 </div>
               </div>
+
+              {errors.first_name && <div className="text-danger">{errors.first_name}</div>}
               <div class="mb-3 row">
                 <label for="phoneInput" class="col-sm-4 col-form-label">Phone Number</label>
                 <div class="col-sm-8">
-                  <input  onChange={handleChange}  type="tel" class="form-control" id="phoneInput" name="phone_number"/>
+                  <input  onChange={handleChange}  type="tel" class="form-control" id="phoneInput" name="phone_number" required/>
                 </div>
               </div>
+
+
+              
+              {errors.gender && <div className="text-danger">{errors.gender}</div>}
               <div class="mb-3 row">
               <label class="col-sm-4 col-form-label">Gender</label>
               <div class="col-sm-8">
@@ -143,6 +191,9 @@ const Add_Employee = () => {
                 </select>
               </div>
             </div>
+
+            
+            {errors.password && <div className="text-danger">{errors.password}</div>}
               <div class="mb-3 row">
                 <label for="passwordInput" class="col-sm-4 col-form-label">Password</label>
                 <div class="col-sm-8">

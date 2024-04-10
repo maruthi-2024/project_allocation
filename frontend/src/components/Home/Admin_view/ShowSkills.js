@@ -9,7 +9,7 @@ const ShowSkills = ({ handleDeleteSkill, handleAddSkill, handleSaveSkills, skill
     const [isAccordionOpen, setIsAccordionOpen] = useState(false);
     useEffect(() => {
         fetchSkillOptions();
-    }, [])
+    },[])
     const expLevel = {
         BG: 'Beginner',
         IN: 'Intermediate',

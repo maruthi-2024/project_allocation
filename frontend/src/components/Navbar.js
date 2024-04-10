@@ -29,8 +29,8 @@ const NavbarComponent = () => {
     };
 
     const res = await axios.get(urls.get_notifications, config)
-    setNotificationCount(res.data.length)
-    setNotifications(res.data);
+    // setNotificationCount(res.data.length)
+    // setNotifications(res.data);
   }
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const NavbarComponent = () => {
   const submitHandler = () => {
     dispatch(logoutUser());
   };
-
+  {console.log("cheking")}
   return (
     <>
       {token == null ? (
@@ -87,7 +87,10 @@ const NavbarComponent = () => {
             <Navbar.Brand as={Link} to="/home">
               <img src={Logo} alt="Logo" className="logo-image mx-3" style={{ maxWidth: '100px', minWidth: '25px' }} />
             </Navbar.Brand>
-            {!is_user && <Nav.Link  as={Link} to="/emps" className="me-auto my-2 my-lg-0 nav-link-hover p-2">Employees</Nav.Link>}
+            {!is_user &&<><Nav.Link  as={Link} to="/emps" className="me-auto my-2 my-lg-0 nav-link-hover p-2">Employees</Nav.Link>
+            <Nav.Link  as={Link} to="/about" className="me-auto my-2 my-lg-0 nav-link-hover p-2">About us</Nav.Link>
+            </> }
+            
 
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">

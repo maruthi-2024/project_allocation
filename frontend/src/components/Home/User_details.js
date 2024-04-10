@@ -107,6 +107,7 @@ const User_details = () => {
     }
     setExtraSkill(!extraSkill)
   }
+
   return (
     <div className="card p-2 mt-3 mx-2 border">
       <div className="d-flex justify-content-end">

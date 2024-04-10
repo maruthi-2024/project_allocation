@@ -11,7 +11,7 @@ from Api.authentication import JWTAuthentication
 
 
 #to get avaialable designations
-@api_view(['GET'])
+@api_view(['GET',"POST"])
 @authentication_classes([JWTAuthentication])  
 @permission_classes([IsAuthenticated])
 @user_passes_test(lambda u: u.is_superuser)
@@ -20,3 +20,8 @@ def Get_Designations(request):
         designations = Designation.objects.all()
         serializer = DesignationSerializer(designations,many = True)
         return JsonResponse(serializer.data,status=HTTP_200_OK,safe=False)
+    elif request.method == "POST":
+        serializer = DesignationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return JsonResponse(serializer.data,status=HTTP_200_OK)

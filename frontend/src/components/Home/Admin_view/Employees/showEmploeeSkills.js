@@ -42,7 +42,11 @@ const ShowEmployeeSkills = ({ user }) => {
           Authorization: `Bearer ${token}`,
         },
       };
-      skills.map(async skill => { await axios.put(urls.get_emp_skills + user.id, skill, config) })
+      skills.map(async skill => {if(skill.skill_info?.skill){ await axios.put(urls.get_emp_skills + user.id, skill, config)}else{
+        alert("add required skill")
+        return
+      } })
+      fetchEmployeeSkills();
       setIsEditing(false);
 
     } catch (err) {
